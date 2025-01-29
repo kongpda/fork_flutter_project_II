@@ -36,7 +36,7 @@ class GetStartScreen extends StatelessWidget {
                   style: TextStyle(fontSize: 18, color: Colors.grey.shade700)),
               ],
             ),
-            SizedBox(height: 130),
+            SizedBox(height: 110),
             SizedBox(
               height: 60,
               width: double.infinity,

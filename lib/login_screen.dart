@@ -28,8 +28,6 @@ class LoginScreen extends StatelessWidget {
         color: Color(0xFF11151C),
         padding: const EdgeInsets.only(left: 30, right: 30),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             SizedBox(height: 20),
             Text("Sign Up", style: TextStyle(fontSize: 28, color: Colors.white)),
@@ -42,17 +40,21 @@ class LoginScreen extends StatelessWidget {
                     width: double.infinity,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.grey.shade900),
+                      border: Border.all(color: Colors.grey.shade800),
                     ),
-                      padding: EdgeInsets.only(left: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(Icons.person_outline_rounded, color: Colors.grey.shade600, size: 25),
-                        SizedBox(width: 10),
-                        Text('Username', style: TextStyle(fontSize: 18, color: Colors.grey.shade500)),
-                      ],
-                    )
+                    padding: EdgeInsets.only(left: 20),
+                    child: TextFormField(
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.person, color: Colors.grey.shade600, size: 25),
+                        hintText: 'Username',
+                        hintStyle: TextStyle(fontSize: 18, color: Colors.grey.shade700),
+                        border: InputBorder.none,
+                      ),
+                      textInputAction: TextInputAction.send,
+                      keyboardType: TextInputType.text,
+                      autocorrect: false,
+                    ),
                   ),
                   SizedBox(height: 20),
                   Container(
@@ -60,17 +62,21 @@ class LoginScreen extends StatelessWidget {
                     width: double.infinity,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.grey.shade900),
+                      border: Border.all(color: Colors.grey.shade800),
                     ),
                       padding: EdgeInsets.only(left: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(Icons.email_outlined, color: Colors.grey.shade600, size: 25),
-                        SizedBox(width: 10),
-                        Text('Email', style: TextStyle(fontSize: 18, color: Colors.grey.shade500)),
-                      ],
-                    )
+                    child: TextFormField(
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.email_outlined, color: Colors.grey.shade600, size: 25),
+                        hintText: 'Email',
+                        hintStyle: TextStyle(fontSize: 18, color: Colors.grey.shade700),
+                        border: InputBorder.none,
+                      ),
+                      textInputAction: TextInputAction.send,
+                      keyboardType: TextInputType.text,
+                      autocorrect: false,
+                    ),
                   ),
                   SizedBox(height: 20),
                   Container(
@@ -78,19 +84,22 @@ class LoginScreen extends StatelessWidget {
                     width: double.infinity,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.grey.shade900),
+                      border: Border.all(color: Colors.grey.shade800),
                     ),
                       padding: EdgeInsets.only(left: 20, right: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(Icons.lock_outline_sharp, color: Colors.grey.shade600, size: 25),
-                        SizedBox(width: 10),
-                        Text('Password', style: TextStyle(fontSize: 18, color: Colors.grey.shade500)),
-                        Expanded(child: Container()),
-                        Icon(Icons.visibility_off, color: Colors.grey.shade600, size: 25),
-                      ],
-
+                    child: TextFormField(
+                      
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.lock_open_outlined, color: Colors.grey.shade600, size: 25),
+                        hintText: 'Password',
+                        hintStyle: TextStyle(fontSize: 18, color: Colors.grey.shade700),
+                        border: InputBorder.none,
+                        suffixIcon: IconButton(onPressed: (){}, icon: Icon(Icons.remove_red_eye, color: Colors.grey.shade600, size: 25)),
+                      ),
+                      textInputAction: TextInputAction.send,
+                      keyboardType: TextInputType.text,
+                      autocorrect: false,
                     ),
                     
                   ),
@@ -98,7 +107,7 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
             
-            SizedBox(height: 20),
+            SizedBox(height: 40),
             SizedBox(
               child: Column(
                 children: [
@@ -113,10 +122,16 @@ class LoginScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      child: const Text('Continue With Email', style: TextStyle(fontSize: 18, color: Colors.white)),
+                      child: const Text('Sign Up', style: TextStyle(fontSize: 20, color: Colors.white)),
                     ),
                   ),
-                  SizedBox(height: 15),
+                  SizedBox(height: 50),
+                  Column(
+                    children: [
+                      Text('Or Sign up with', style: TextStyle(color: Colors.grey.shade500, fontSize: 18)),
+                    ],
+                  ),
+                  SizedBox(height: 50),
                   SizedBox(
                     height: 60,
                     width: double.infinity,
