@@ -45,5 +45,32 @@ List<SlideModel> slideModelList = [
     description : "Description 3",
     date: "31 May 2014",
   ),
+  SlideModel(
+    id : 1,
+    attendence : 70,
+    title : "Item 3",
+    img : "https://images.pexels.com/photos/1709003/pexels-photo-1709003.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    address : "Address 3",
+    description : "Description 3",
+    date: "31 May 2014",
+  ),
+  SlideModel(
+    id : 1,
+    attendence : 70,
+    title : "Item 3",
+    img : "https://images.pexels.com/photos/1709003/pexels-photo-1709003.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    address : "Address 3",
+    description : "Description 3",
+    date: "31 May 2014",
+  ),
+  SlideModel(
+    id : 1,
+    attendence : 70,
+    title : "Item 3",
+    img : "https://images.pexels.com/photos/1709003/pexels-photo-1709003.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    address : "Address 3",
+    description : "Description 3",
+    date: "31 May 2014",
+  ),
  
 ];

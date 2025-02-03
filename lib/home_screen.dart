@@ -70,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 235,
               child: _buildSlider(),
             ),
-            SizedBox(height: 20,),
+            SizedBox(height: 30,),
             Row(children: [
               Text('Popular Events', style: 
                 TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
@@ -79,9 +79,17 @@ class _HomeScreenState extends State<HomeScreen> {
               Text('View more', style: TextStyle(fontSize: 16, color: Colors.blue),),
             ],
           ),
-          SizedBox(height: 20),
+          SizedBox(height: 30),
           
-          _buildPopularEvents(),
+          Expanded(
+            child: ListView.builder(
+              physics: BouncingScrollPhysics(),
+              itemCount: slideModelList.length,
+              itemBuilder: (context, index){
+                return _buildPopularEventItem(slideModelList[index]);
+              },
+            ),
+          ),
     
           ],
         ),
@@ -89,43 +97,39 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildPopularEvents(){
-    return SingleChildScrollView(
-      child: 
-        ListView.builder(
-          shrinkWrap: true,
-          itemCount: slideModelList.length,
-          itemBuilder: (context, index){
-            return _buildPopularEventItem(slideModelList[index]);
-          },
-        ),
-      
-    );
-  }
+
+
   Widget _buildPopularEventItem(SlideModel slide){
     return Card(
-      margin: EdgeInsets.only(bottom: 20),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                child: Image.network(slide.img,
-                fit: BoxFit.cover,
-                height: 100,
-                ),
+      color: Color(0xFF1A1D24),
+      margin: EdgeInsets.only(bottom: 20,),
+      child: Container(
+      padding: EdgeInsets.only(right: 20),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            
+            ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              child: Image.network(slide.img,
+              width: 120,
+              height: 100,
+              fit: BoxFit.cover,
               ),
-              Positioned(
-                bottom: 10,
-                right: 10,
-                child: Text(slide.title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),),
-              ),
-            ],
-          ),
-          SizedBox(height: 10),
-        ]
+            ),
+            SizedBox(width: 20),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(slide.date, style: TextStyle(fontSize: 16, color: Colors.lightBlueAccent),),
+                SizedBox(height: 10),
+                Text(slide.title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey.shade400),),
+              ],
+            ),
+            Spacer(),
+            Icon(Icons.favorite_border_outlined, color: Colors.grey.shade700, size: 26,),
+          ]
+        ),
       ),
     );
   }
@@ -136,6 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Container(
             height: 235,
+            width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
             color: Colors.white,
