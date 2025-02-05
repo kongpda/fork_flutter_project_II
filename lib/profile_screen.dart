@@ -1,10 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_project_ii/detail_screen.dart';
 import 'package:flutter_project_ii/slide_model.dart';
 
 enum ChangeWidget {
   grid,
-  reels,
-  tagged,
+  tickets,
+  setting,
 }
 
 class ProfileScreen extends StatefulWidget {
@@ -24,7 +26,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       
       body: Container(
-        color: Color(0xFF11151C),
+        color: Color(0xFF1A202C),
         child: SizedBox(
           width: MediaQuery.sizeOf(context).width,
           height: MediaQuery.sizeOf(context).height,
@@ -52,35 +54,48 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.all(20.0),
+                padding: const EdgeInsets.only(top: 10.0),
                 child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    IconButton(onPressed: (){
-                      setState(() {
-                        selectedWidget = ChangeWidget.grid;
-                        BorderSide(color: Color(0xFF7F7F7F));
-                      });
-                    }, 
-
-                      icon: isSelected ? Icon(Icons.grid_on, size: 30) : Icon(Icons.grid_off_rounded, size: 30),
-
-                      
+                    Container(
+                      padding: EdgeInsets.only(bottom: 15, left: 10,right: 10),
+                      decoration:selectedWidget == ChangeWidget.grid ? BoxDecoration(
+                        border: Border(bottom: BorderSide(color: Colors.grey),),
+                      ) : null,
+                      child: IconButton(onPressed: (){
+                        setState(() {
+                          selectedWidget = ChangeWidget.grid;
+                        });
+                      }, 
+                        icon: Icon(Icons.grid_on, size: 30),
+                      ),
                     ),
-                      
-                    IconButton(onPressed: (){
-                      setState(() {
-                        selectedWidget = ChangeWidget.reels;
-                      });
-                    },
-                      icon: Icon(Icons.view_sidebar_outlined, size: 30)
+                    Container(
+                      padding: EdgeInsets.only(bottom: 15, left: 10,right: 10),
+                      decoration:selectedWidget == ChangeWidget.tickets ? BoxDecoration(
+                        border: Border(bottom: BorderSide(color: Colors.grey),),
+                      ) : null,
+                      child: IconButton(onPressed: (){
+                        setState(() {
+                          selectedWidget = ChangeWidget.tickets;
+                        });
+                      },
+                        icon: Icon(CupertinoIcons.ticket, size: 35)
+                      ),
                     ),
-                    IconButton(onPressed: (){
-                      setState(() {
-                      selectedWidget = ChangeWidget.tagged;
-                      });
-                    },
-                      icon:Icon(Icons.person_pin_outlined, size: 30)
+                    Container(
+                      padding: EdgeInsets.only(bottom: 15, left: 10,right: 10),
+                      decoration:selectedWidget == ChangeWidget.setting ? BoxDecoration(
+                        border: Border(bottom: BorderSide(color: Colors.grey),),
+                      ) : null,
+                      child: IconButton(onPressed: (){
+                        setState(() {
+                        selectedWidget = ChangeWidget.setting;
+                        });
+                      },
+                        icon:Icon(Icons.settings_applications_outlined, size: 35)
+                      ),
                     ),
                   ],
                 ),
@@ -99,55 +114,122 @@ class _ProfileScreenState extends State<ProfileScreen> {
     switch (selectedWidget) {
       case ChangeWidget.grid:
         return _buildGridItem();
-      case ChangeWidget.reels:
-        return _buildReelsItem();
-      case ChangeWidget.tagged:
-        return _buildTaggedItem();
+      case ChangeWidget.tickets:
+        return _buildTicketsItem();
+      case ChangeWidget.setting:
+        return _buildSettingItem();
     }
   }
-  Widget _buildReelsItem(){
+  Widget _buildTicketsItem(){
     return Container();
   }
 
-  
-  Widget _buildReelsItems(String url){
-    return _navigateToDetailReel(AutofillHints.url);
-    
-  }
-  Widget _navigateToDetailReel(String url,{Widget? child}){
-    return InkWell(
-      onTap: (){
-        //Navigator.push(context, MaterialPageRoute(builder: (context) => ReelsDetailScreen()));
-      },
-      child: child,
-    );
-  }
-  Widget _buildTaggedItem(){
-    return Center(
+  Widget _buildSettingItem(){
+    return Container(
+      padding: EdgeInsets.only(left: 30, right: 30, top: 40,),
       child: Column(
         children: [
-          Container(
-          height: 150,
-          width: 150,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(100),
-          ),
-          child: Center(
-            child: Icon(Icons.person_pin_outlined,size: 100, weight: 16,),
-          ),
-          
-        ),
-        SizedBox(height: 20),
-        Container( 
-          padding: const EdgeInsets.all(20),
-          child: Column(
+          Row(
             children: [
-              Text('Photos and Videos of you', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
-              Text('When you are tagged in photos, they will appear here.', style: TextStyle(fontSize: 20), textAlign: TextAlign.center,),
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade900,
+                  borderRadius: BorderRadius.all(Radius.circular(20))
+                ),
+                child: Icon(Icons.notifications_none, color: Color(0xFF455AF7),)
+              ),
+              SizedBox(width: 30,),
+              Text("Notifications", style: 
+                TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+              Spacer(),
+              Icon(Icons.navigate_next_sharp, color: Colors.grey.shade500,size: 34,)
             ],
-          )
-        )
+          ),
+          SizedBox(height: 30,),
+          Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade900,
+                  borderRadius: BorderRadius.all(Radius.circular(20))
+                ),
+                child: Icon(Icons.person_outline_outlined, color: Color(0xFF455AF7),)
+              ),
+              SizedBox(width: 30,),
+              Text("Personal Information", style: 
+                TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+              Spacer(),
+              Icon(Icons.navigate_next_sharp, color: Colors.grey.shade500,size: 34,)
+            ],
+          ),
+          SizedBox(height: 30,),
+          Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade900,
+                  borderRadius: BorderRadius.all(Radius.circular(20))
+                ),
+                child: Icon(Icons.translate, color: Color(0xFF455AF7),)
+              ),
+              SizedBox(width: 30,),
+              Text("Language", style: 
+                TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+              Spacer(),
+              Text('English', style: TextStyle(color: Colors.grey.shade500),),
+              SizedBox(width: 10,),
+              Icon(Icons.navigate_next_sharp, color: Colors.grey.shade500,size: 34,)
+            ],
+          ),
+          SizedBox(height: 30,),
+          Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade900,
+                  borderRadius: BorderRadius.all(Radius.circular(20))
+                ),
+                child: Icon(Icons.settings, color: Color(0xFF455AF7),)
+              ),
+              SizedBox(width: 30,),
+              Text("Setting", style: 
+                TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+              Spacer(),
+              Icon(Icons.navigate_next_sharp, color: Colors.grey.shade500,size: 34,)
+            ],
+          ),
+          SizedBox(height: 30,),
+          Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade900,
+                  borderRadius: BorderRadius.all(Radius.circular(20))
+                ),
+                child: Icon(Icons.question_mark_rounded, color: Color(0xFF455AF7),)
+              ),
+              SizedBox(width: 30,),
+              Text("FAQ", style: 
+                TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+              Spacer(),
+              Icon(Icons.navigate_next_sharp, color: Colors.grey.shade500,size: 34,)
+            ],
+          ),
         ],
       ),
     );
@@ -183,12 +265,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
-  Widget _navigateToDetailScreen(SlideModel url,{Widget? child}){
+  Widget _navigateToDetailScreen(SlideModel post,{Widget? child}){
     return InkWell(
       onTap: (){
-        //Navigator.push(context, MaterialPageRoute(builder: (context) => DetailScreen(url)));
+        Navigator.of(context).push(
+          CupertinoPageRoute(builder: (context) => DetailScreen(post),)
+        );
       },
       child: child,
     );
   }
+  
 }

@@ -36,14 +36,14 @@ class _MainScreenState extends State<MainScreen> {
   Widget _buildBottomNavigationBar() {
     return NavigationBar(
       
-      backgroundColor: Color(0xFF11151C),
+      backgroundColor: Color(0xFF1A202C),
       selectedIndex: currentIndex,
       onDestinationSelected: (index) {
         setState(() {
           currentIndex = index;
         });
       },
-      indicatorColor: Color(0xFF11151C),
+      indicatorColor: Color(0xFF1A202C),
       overlayColor: WidgetStateColor.transparent,
       destinations: [
         NavigationDestination(

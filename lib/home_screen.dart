@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_project_ii/detail_screen.dart';
 import 'package:flutter_project_ii/slide_model.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 80,
-        backgroundColor: Color(0xFF11151C),
+        backgroundColor: Color(0xFF1A202C),
         title: Container(
           padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
           child: Row(
@@ -52,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: Container(
-        color: Color(0xFF11151C),
+        color: Color(0xFF1A202C),
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
@@ -76,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
               Spacer(),
-              Text('View more', style: TextStyle(fontSize: 16, color: Colors.blue),),
+              Text('View more', style: TextStyle(fontSize: 16, color: Color(0xFF455AF7)),),
             ],
           ),
           SizedBox(height: 30),
@@ -100,35 +102,38 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
   Widget _buildPopularEventItem(SlideModel slide){
-    return Card(
-      color: Color(0xFF1A1D24),
-      margin: EdgeInsets.only(bottom: 20,),
-      child: Container(
-      padding: EdgeInsets.only(right: 20),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            
-            ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              child: Image.network(slide.img,
-              width: 120,
-              height: 100,
-              fit: BoxFit.cover,
+    return _navigateToDetailScreen(
+      slide,
+      child: Card(
+        color: Color(0xFF1A1D24),
+        margin: EdgeInsets.only(bottom: 20,),
+        child: Container(
+        padding: EdgeInsets.only(right: 20),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              
+              ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                child: Image.network(slide.img,
+                width: 120,
+                height: 100,
+                fit: BoxFit.cover,
+                ),
               ),
-            ),
-            SizedBox(width: 20),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(slide.date, style: TextStyle(fontSize: 16, color: Colors.lightBlueAccent),),
-                SizedBox(height: 10),
-                Text(slide.title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey.shade400),),
-              ],
-            ),
-            Spacer(),
-            Icon(Icons.favorite_border_outlined, color: Colors.grey.shade700, size: 26,),
-          ]
+              SizedBox(width: 20),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(slide.date, style: TextStyle(fontSize: 16, color: Color(0xFF455AF7)),),
+                  SizedBox(height: 10),
+                  Text(slide.title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey.shade400),),
+                ],
+              ),
+              Spacer(),
+              Icon(Icons.favorite_border_outlined, color: Colors.grey.shade700, size: 26,),
+            ]
+          ),
         ),
       ),
     );
@@ -160,93 +165,106 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildSlideItem(SlideModel slide){
-    return  Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                  ),
-                  child: Image.network(slide.img,
-                  fit: BoxFit.cover,
-                  width: MediaQuery.sizeOf(context).width,
-                  height: 150,
-                  ),
-                ),
-                Positioned(
-                  top: 10,
-                  right: 10,
-                  child: Container(
-                    height: 50,
-                    width: 45,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                    //padding: EdgeInsets.all(10),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(slide.date.substring(0,2), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black)),
-                      Text(slide.date.substring(3, 6), style: TextStyle(fontSize: 12, color: Colors.black),),
-                    ],
-                  ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-            Container(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+    return  _navigateToDetailScreen(
+      slide,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Stack(
                 children: [
-                  Row(
-                    children: [
-                      Column(
-                        children: [
-                          Text(
-                          slide.title,
-                          style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold, color: Colors.black),
-                          ),
-                          SizedBox(height: 5,),
-                          Row(
-                            children: [
-                              Icon(Icons.location_on, color: Colors.grey[500], size: 20),
-                              SizedBox(width: 5),
-                              Text(slide.address, style: TextStyle(fontSize: 16, color: Colors.grey[500]),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      Spacer(),
-                      Row(children: [
-                        Container(
-                        width: 50,
-                        padding: EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          color: Colors.blue,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                        child:
-                          Text(slide.attendence.toString(), style: TextStyle(fontSize: 18, color: Colors.white),
-                          ),
-                        
-                      )
-                      ),
-                      ],)
-                    ],
+                  ClipRRect(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    ),
+                    child: Image.network(slide.img,
+                    fit: BoxFit.cover,
+                    width: MediaQuery.sizeOf(context).width,
+                    height: 150,
+                    ),
                   ),
-                  
+                  Positioned(
+                    top: 10,
+                    right: 10,
+                    child: Container(
+                      height: 50,
+                      width: 45,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      //padding: EdgeInsets.all(10),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(slide.date.substring(0,2), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black)),
+                        Text(slide.date.substring(3, 6), style: TextStyle(fontSize: 12, color: Colors.black),),
+                      ],
+                    ),
+                    ),
+                  ),
                 ],
               ),
-            ),
-          ],
+              SizedBox(height: 10),
+              Container(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Column(
+                          children: [
+                            Text(
+                            slide.title,
+                            style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold, color: Colors.black),
+                            ),
+                            SizedBox(height: 5,),
+                            Row(
+                              children: [
+                                Icon(Icons.location_on, color: Colors.grey[500], size: 20),
+                                SizedBox(width: 5),
+                                Text(slide.address, style: TextStyle(fontSize: 16, color: Colors.grey[500]),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Spacer(),
+                        Row(children: [
+                          Container(
+                          width: 50,
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            color: Color(0xFF455AF7),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                          child:
+                            Text(slide.attendence.toString(), style: TextStyle(fontSize: 18, color: Colors.white),
+                            ),
+                          
+                        )
+                        ),
+                        ],)
+                      ],
+                    ),
+                    
+                  ],
+                ),
+              ),
+            ],
+      ),
+    );
+  }
+  Widget _navigateToDetailScreen(SlideModel post,{Widget? child}){
+    return InkWell(
+      onTap: (){
+        Navigator.of(context).push(
+          CupertinoPageRoute(builder: (context) => DetailScreen(post),)
+        );
+      },
+      child: child,
     );
   }
 }

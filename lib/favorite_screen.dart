@@ -14,18 +14,18 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 80,
-        backgroundColor: Color(0xFF11151C),
+        backgroundColor: Color.fromARGB(255, 19, 23, 30),
         title: Text('Favorites', style: 
           TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.bold),),
         centerTitle: true,
       ),
       body: Container(
-        color: Color(0xFF11151C),
+        color: Color.fromARGB(255, 19, 23, 30),
         child: Container(
         padding: EdgeInsets.all(30),
           height: MediaQuery.sizeOf(context).height,
           decoration: BoxDecoration(
-          color: Color.fromARGB(255, 34, 40, 51),
+          color: Color(0xFF1A202C),
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(40),
               topRight: Radius.circular(40),
@@ -76,7 +76,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(slide.date, style: TextStyle(fontSize: 16, color: Colors.lightBlueAccent),),
+                Text(slide.date, style: TextStyle(fontSize: 16, color: Color(0xFF455AF7)),),
                 SizedBox(height: 10),
                 Text(slide.title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey.shade400),),
               ],
