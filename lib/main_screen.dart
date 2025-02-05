@@ -25,7 +25,7 @@ class _MainScreenState extends State<MainScreen> {
       children: [
         HomeScreen(),
         FavoriteScreen(),
-        // TicketScreen(),
+         Container(),
         ProfileScreen(),
       ]
     );
