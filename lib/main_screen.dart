@@ -3,8 +3,11 @@ import 'package:flutter_project_ii/favorite_screen.dart';
 import 'package:flutter_project_ii/home_screen.dart';
 import 'package:flutter_project_ii/profile_screen.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_project_ii/tickets/tickets_screen.dart';
 
 class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
+
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
@@ -20,22 +23,18 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _buildBody() {
-    return IndexedStack(
-      index: currentIndex,
-      children: [
-        HomeScreen(),
-        FavoriteScreen(),
-         Container(),
-        ProfileScreen(),
-      ]
-    );
+    return IndexedStack(index: currentIndex, children: [
+      HomeScreen(),
+      FavoriteScreen(),
+      TicketsScreen(),
+      ProfileScreen(),
+    ]);
   }
 
   int currentIndex = 0;
 
   Widget _buildBottomNavigationBar() {
     return NavigationBar(
-      
       backgroundColor: Color(0xFF1A202C),
       selectedIndex: currentIndex,
       onDestinationSelected: (index) {
@@ -47,26 +46,57 @@ class _MainScreenState extends State<MainScreen> {
       overlayColor: WidgetStateColor.transparent,
       destinations: [
         NavigationDestination(
-          icon: Icon(CupertinoIcons.house_alt, size: 35, color: Colors.grey.shade500,),
-          selectedIcon: Icon(CupertinoIcons.house_alt_fill, size: 35, color: Colors.grey.shade500,),
+          icon: Icon(
+            CupertinoIcons.house_alt,
+            size: 35,
+            color: Colors.grey.shade500,
+          ),
+          selectedIcon: Icon(
+            CupertinoIcons.house_alt_fill,
+            size: 35,
+            color: Colors.grey.shade500,
+          ),
           label: '',
         ),
         NavigationDestination(
-          icon: Icon(Icons.favorite_border, size: 35, color: Colors.grey.shade400,),
-          selectedIcon: Icon(Icons.favorite, size: 35, color: Colors.grey.shade400,),
+          icon: Icon(
+            Icons.favorite_border,
+            size: 35,
+            color: Colors.grey.shade400,
+          ),
+          selectedIcon: Icon(
+            Icons.favorite,
+            size: 35,
+            color: Colors.grey.shade400,
+          ),
           label: '',
         ),
         NavigationDestination(
-          icon: Icon(CupertinoIcons.ticket, size: 35, color: Colors.grey.shade400,),
-          selectedIcon: Icon(CupertinoIcons.ticket_fill, size: 35, color: Colors.grey.shade400,),
+          icon: Icon(
+            CupertinoIcons.ticket,
+            size: 35,
+            color: Colors.grey.shade400,
+          ),
+          selectedIcon: Icon(
+            CupertinoIcons.ticket_fill,
+            size: 35,
+            color: Colors.grey.shade400,
+          ),
           label: '',
         ),
         NavigationDestination(
-          icon: Icon(Icons.person_outline, size: 35, color: Colors.grey.shade400,),
-          selectedIcon: Icon(Icons.person, size: 35, color: Colors.grey.shade400,),
+          icon: Icon(
+            Icons.person_outline,
+            size: 35,
+            color: Colors.grey.shade400,
+          ),
+          selectedIcon: Icon(
+            Icons.person,
+            size: 35,
+            color: Colors.grey.shade400,
+          ),
           label: '',
         ),
-        
       ],
     );
   }
