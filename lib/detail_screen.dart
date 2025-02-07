@@ -17,6 +17,10 @@ class _DetailScreenState extends State<DetailScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF1A202C),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_new, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
         title: Center(
         child: Column(children: [
           Positioned(

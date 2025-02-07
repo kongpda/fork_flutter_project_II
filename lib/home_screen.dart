@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_project_ii/detail_screen.dart';
+import 'package:flutter_project_ii/language_data.dart';
+import 'package:flutter_project_ii/language_logic.dart';
 import 'package:flutter_project_ii/slide_model.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   //const HomeScreen({super.key});
@@ -11,8 +14,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  Language _lang = Language();
+  bool language = true;
   @override
   Widget build(BuildContext context) {
+    _lang = context.watch<LanguageLogic>().language;
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 80,
@@ -62,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Row(
               children: [
                 Text(
-                    'Featured',
+                    _lang.feature,
                     style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
               ],
@@ -74,11 +80,11 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             SizedBox(height: 30,),
             Row(children: [
-              Text('Popular Events', style: 
+              Text(_lang.popular, style: 
                 TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
               Spacer(),
-              Text('View more', style: TextStyle(fontSize: 16, color: Color(0xFF455AF7)),),
+              Text(_lang.more, style: TextStyle(fontSize: 16, color: Color(0xFF455AF7)),),
             ],
           ),
           SizedBox(height: 30),
@@ -258,10 +264,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
   Widget _navigateToDetailScreen(SlideModel post,{Widget? child}){
-    return InkWell(
+    return GestureDetector(
       onTap: (){
-        Navigator.of(context).push(
-          CupertinoPageRoute(builder: (context) => DetailScreen(post),)
+        Navigator.push(context,
+          MaterialPageRoute(builder: (context) => DetailScreen(post),)
         );
       },
       child: child,

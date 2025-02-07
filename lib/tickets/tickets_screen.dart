@@ -27,9 +27,9 @@ class _TicketsScreenState extends State<TicketsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF11151C),
+      backgroundColor: Color(0xFF1A202C),
       appBar: AppBar(
-        backgroundColor: Color(0xFF11151C),
+        backgroundColor: Color(0xFF1A202C),
         title: Text('My Ticket', style: TextStyle(color: Colors.white)),
       ),
       body: Column(
@@ -152,7 +152,7 @@ class _TicketsScreenState extends State<TicketsScreen>
       child: Container(
         padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Color(0xFF1E2630),
+          color: Color(0xFF1A1D24),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(

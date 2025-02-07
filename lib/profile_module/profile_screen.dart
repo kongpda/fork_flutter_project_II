@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_project_ii/detail_screen.dart';
+import 'package:flutter_project_ii/profile_module/language_screen.dart';
 import 'package:flutter_project_ii/slide_model.dart';
+import 'package:flutter_project_ii/tickets/ticket_detail_screen.dart';
 
 enum ChangeWidget {
   grid,
@@ -68,7 +70,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           selectedWidget = ChangeWidget.grid;
                         });
                       }, 
-                        icon: Icon(Icons.grid_on, size: 30),
+                        icon: Icon(Icons.grid_on, size: 30, color: Colors.white,),
                       ),
                     ),
                     Container(
@@ -81,7 +83,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           selectedWidget = ChangeWidget.tickets;
                         });
                       },
-                        icon: Icon(CupertinoIcons.ticket, size: 35)
+                        icon: Icon(CupertinoIcons.ticket, size: 35, color: Colors.white,)
                       ),
                     ),
                     Container(
@@ -94,7 +96,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         selectedWidget = ChangeWidget.setting;
                         });
                       },
-                        icon:Icon(Icons.settings_applications_outlined, size: 35)
+                        icon:Icon(Icons.settings_applications_outlined, size: 35, color: Colors.white,)
                       ),
                     ),
                   ],
@@ -121,7 +123,116 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
   Widget _buildTicketsItem(){
-    return Container();
+    return Expanded(child: 
+      ListView(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        children: [
+          SizedBox(height: 20,),
+          _buildTicketCard(
+            'Summer Music Festival',
+            '15 Aug - 07:00 PM',
+            'Regular ticket : 1',
+            context,
+          ),
+          SizedBox(height: 16),
+          _buildTicketCard(
+            'Jazz Night Special',
+            '10 Sep - 09:00 PM',
+            'Regular ticket : 1',
+            context,
+          ),
+        ],
+      ),
+    );
+  }
+  Widget _buildTicketCard(
+      String title, String date, String ticketInfo, BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TicketDetailScreen(
+              title: title,
+              date: date,
+            ),
+          ),
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Color(0xFF1A1D24),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Left side of the ticket
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    date,
+                    style: TextStyle(
+                      color: Colors.grey[400],
+                      fontSize: 14,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    ticketInfo,
+                    style: TextStyle(
+                      color: Colors.grey[400],
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Dotted line separator
+            SizedBox(
+              height: 80,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: CustomPaint(
+                  painter: DottedLinePainter(),
+                  size: Size(1, double.infinity),
+                ),
+              ),
+            ),
+            // QR Code section
+            Container(
+              padding: EdgeInsets.all(8), // White border padding
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: Image.asset(
+                  'assets/images/google-qr.png',
+                  width: 72,
+                  height: 72,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildSettingItem(){
@@ -169,7 +280,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ],
           ),
           SizedBox(height: 30,),
-          Row(
+          GestureDetector(
+            onTap: (){
+              // Navigate to change password screen
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChangeLanguageScreen(),
+                ),
+              );
+            },
+          child: Row(
             children: [
               Container(
                 width: 40,
@@ -189,6 +310,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               SizedBox(width: 10,),
               Icon(Icons.navigate_next_sharp, color: Colors.grey.shade500,size: 34,)
             ],
+          ),
           ),
           SizedBox(height: 30,),
           Row(
@@ -276,4 +398,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
   
+}
+
+class DottedLinePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint paint = Paint()
+      ..color = Colors.grey[600]!
+      ..strokeWidth = 1
+      ..strokeCap = StrokeCap.round;
+
+    const double dashHeight = 4;
+    const double dashSpace = 4;
+    double startY = 0;
+
+    while (startY < size.height) {
+      canvas.drawLine(
+        Offset(0, startY),
+        Offset(0, startY + dashHeight),
+        paint,
+      );
+      startY += dashHeight + dashSpace;
+    }
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
