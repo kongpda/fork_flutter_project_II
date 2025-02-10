@@ -18,9 +18,8 @@ class _ChangeLanguageScreenState extends State<ChangeLanguageScreen> {
     Language _lang = context.watch<LanguageLogic>().language;
     int _langIndex = context.watch<LanguageLogic>().langIndex;
     return Scaffold(
-      backgroundColor: Color(0xFF1A202C),
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      backgroundColor: Color(0xFF1A202C),
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios_new, color: Colors.white),
@@ -37,27 +36,38 @@ class _ChangeLanguageScreenState extends State<ChangeLanguageScreen> {
         centerTitle: true,
       ),
       body: Container(
-        padding: EdgeInsets.all(30),
-        child: Container(
-        //color: Color(0xFF1E2630),
+        color: Color(0xFF1A202C),
         padding: EdgeInsets.all(20),
+        child: Container(
           child: Row(
             children: [
               Expanded(
                 child: Column(
                   children: [
                     Container(
-                      padding: EdgeInsets.only(bottom: 10),
-                      color: Colors.white,
+                      padding: EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(20))
+                        color:_langIndex == 1 ? Color(0xFF27303F) : null,
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        border: Border.all(color: Colors.grey.shade800)
                       ),
                       child: ListTile(
+                        leading: Container(
+                          width: 50,
+                          height: 50,
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(30)),
+                            color:_langIndex == 1 ? Color(0xFF1A202C): Color(0xFF27303F),
+                          ),
+                          child: Image(image: NetworkImage("https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Flag_of_Cambodia.svg/640px-Flag_of_Cambodia.svg.png"),)
+                        ),
+                        horizontalTitleGap: 30,
                         title: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Khmer', style:TextStyle(color: Colors.white,fontSize: 22)),
+                            Text('Khmer', style:TextStyle(color: Colors.white,fontSize: 20)),
                             Text('ភាសាខ្មែរ', style:TextStyle(color: Colors.white))
                           ]
                         ),
@@ -67,25 +77,39 @@ class _ChangeLanguageScreenState extends State<ChangeLanguageScreen> {
                          trailing: _langIndex == 1 ? const Icon(Icons.check, color: Color(0xFF455AF7),) : null,
                       ),
                     ),
+                    SizedBox(height: 20,),
 
                     Container(
-                      padding: EdgeInsets.only(bottom: 10),
+                      padding: EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        border: Border(bottom: BorderSide(color: Colors.grey),), 
+                        color:_langIndex == 0 ? Color(0xFF27303F) : null,
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        border: Border.all(color: Colors.grey.shade800)
                       ),
                       child: ListTile(
+                        leading: Container(
+                          width: 50,
+                          height: 50,
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(30)),
+                            color: Color(0xFF1A202C),
+                          ),
+                          child: Image(image: NetworkImage("https://cdn.britannica.com/33/4833-050-F6E415FE/Flag-United-States-of-America.jpg"),)
+                        ),
+                        horizontalTitleGap: 30,
                         title: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('English', style:TextStyle(color: Colors.white,fontSize: 22)),
+                            Text('English', style:TextStyle(color: Colors.white,fontSize: 20)),
                             Text('English', style:TextStyle(color: Colors.white))
                           ]
                         ),
                         onTap: () {
                         context.read<LanguageLogic>().changeLanguage();
                         },
-                         trailing: _langIndex == 0 ? const Icon(Icons.check, color: Color(0xFF455AF7)) : null,
+                         trailing: _langIndex == 0 ? const Icon(Icons.check, color: Color(0xFF455AF7),) : null,
                       ),
                     ),
                   ],
