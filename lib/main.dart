@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project_ii/api_module/event_provider.dart';
+import 'package:flutter_project_ii/category_module/category_service.dart';
 import 'package:flutter_project_ii/language_logic.dart';
 import 'package:provider/provider.dart';
 
@@ -10,6 +11,8 @@ void main() {
 Widget provider(){
   return MultiProvider(providers: [
     ChangeNotifierProvider(create: (create) => LanguageLogic()),
+    ChangeNotifierProvider(create: (create) => CategoryLogic()),
+
   ],
   child: MyApp(),
   );

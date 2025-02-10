@@ -74,7 +74,7 @@ class _ChangeLanguageScreenState extends State<ChangeLanguageScreen> {
                         onTap: () {
                         context.read<LanguageLogic>().changeToKh();
                         },
-                         trailing: _langIndex == 1 ? const Icon(Icons.check, color: Color(0xFF455AF7),) : null,
+                         trailing: _langIndex == 1 ? const Icon(Icons.check_box_outlined, color: Color(0xFF455AF7),size: 35,) : Icon(Icons.check_box_outline_blank_sharp,size: 35),
                       ),
                     ),
                     SizedBox(height: 20,),
@@ -93,7 +93,7 @@ class _ChangeLanguageScreenState extends State<ChangeLanguageScreen> {
                           padding: EdgeInsets.all(12),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(30)),
-                            color: Color(0xFF1A202C),
+                            color:_langIndex == 0 ? Color(0xFF1A202C): Color(0xFF27303F),
                           ),
                           child: Image(image: NetworkImage("https://cdn.britannica.com/33/4833-050-F6E415FE/Flag-United-States-of-America.jpg"),)
                         ),
@@ -109,7 +109,7 @@ class _ChangeLanguageScreenState extends State<ChangeLanguageScreen> {
                         onTap: () {
                         context.read<LanguageLogic>().changeLanguage();
                         },
-                         trailing: _langIndex == 0 ? const Icon(Icons.check, color: Color(0xFF455AF7),) : null,
+                         trailing: _langIndex == 0 ? const Icon(Icons.check_box_outlined, color: Color(0xFF455AF7),size: 35,) : Icon(Icons.check_box_outline_blank_sharp,size: 35),
                       ),
                     ),
                   ],

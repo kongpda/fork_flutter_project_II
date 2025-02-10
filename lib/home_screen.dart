@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project_ii/category_module/all_category.dart';
 import 'package:flutter_project_ii/api_module/event_logic.dart';
 import 'package:flutter_project_ii/api_module/event_model.dart';
+import 'package:flutter_project_ii/category_module/category_app.dart';
 import 'package:flutter_project_ii/detail_screen.dart';
 import 'package:flutter_project_ii/language_data.dart';
 import 'package:flutter_project_ii/language_logic.dart';
@@ -87,10 +89,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
               Spacer(),
-              Text(_lang.more, style: TextStyle(fontSize: 16, color: Color(0xFF455AF7)),),
+              Expanded(child: 
+              GestureDetector(
+                onTap: (){
+                  Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => CategoryApp(),)
+                  );
+                },
+                child: Text(_lang.more, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF455AF7)),),
+              ),)
             ],
           ),
-          SizedBox(height: 30),
+          SizedBox(height: 20),
           
           Expanded(
             child: ListView.builder(
