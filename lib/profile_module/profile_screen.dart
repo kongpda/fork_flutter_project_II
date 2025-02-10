@@ -409,9 +409,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _navigateToDetailScreen(SlideModel post,{Widget? child}){
     return InkWell(
       onTap: (){
-        Navigator.of(context).push(
-          CupertinoPageRoute(builder: (context) => DetailScreen(post),)
-        );
+        // Navigator.of(context).push(
+        //   CupertinoPageRoute(builder: (context) => DetailScreen(post),)
+        // );
       },
       child: child,
     );

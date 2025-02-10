@@ -1,13 +1,15 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_project_ii/api_module/event_logic.dart';
+import 'package:flutter_project_ii/api_module/event_model.dart';
 import 'package:flutter_project_ii/detail_screen.dart';
 import 'package:flutter_project_ii/language_data.dart';
 import 'package:flutter_project_ii/language_logic.dart';
-import 'package:flutter_project_ii/slide_model.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
   //const HomeScreen({super.key});
+  
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -19,6 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     _lang = context.watch<LanguageLogic>().language;
+    List<Event> record = context.watch<EventLogic>().records;
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 80,
@@ -76,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: 10),
             SizedBox(
               height: 235,
-              child: _buildSlider(),
+              child: _buildSlider(record),
             ),
             SizedBox(height: 30,),
             Row(children: [
@@ -92,9 +95,9 @@ class _HomeScreenState extends State<HomeScreen> {
           Expanded(
             child: ListView.builder(
               physics: BouncingScrollPhysics(),
-              itemCount: slideModelList.length,
+              itemCount: record.length,
               itemBuilder: (context, index){
-                return _buildPopularEventItem(slideModelList[index]);
+                return _buildPopularEventItem(record[index]);
               },
             ),
           ),
@@ -107,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
 
-  Widget _buildPopularEventItem(SlideModel slide){
+  Widget _buildPopularEventItem(Event slide){
     return _navigateToDetailScreen(
       slide,
       child: Card(
@@ -121,20 +124,23 @@ class _HomeScreenState extends State<HomeScreen> {
               
               ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
-                child: Image.network(slide.img,
+                child: Image.network(slide.featureImage,
                 width: 120,
                 height: 100,
                 fit: BoxFit.cover,
                 ),
               ),
               SizedBox(width: 20),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(slide.date, style: TextStyle(fontSize: 16, color: Color(0xFF455AF7)),),
-                  SizedBox(height: 10),
-                  Text(slide.title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey.shade400),),
-                ],
+              SizedBox(
+                width: 200,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(slide.startDate, style: TextStyle(fontSize: 14, color: Color(0xFF455AF7)),),
+                    SizedBox(height: 10),
+                    Text(slide.title,maxLines: 2, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey.shade400),),
+                  ],
+                ),
               ),
               Spacer(),
               Icon(Icons.favorite_border_outlined, color: Colors.grey.shade700, size: 26,),
@@ -145,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildSlider() {
+  Widget _buildSlider(List<Event> event) {
     return ListView(
       physics: BouncingScrollPhysics(),
         children: [
@@ -159,9 +165,9 @@ class _HomeScreenState extends State<HomeScreen> {
             child: PageView.builder(
               physics: BouncingScrollPhysics(),
               pageSnapping: true,
-              itemCount: slideModelList.length,
+              itemCount: event.length,
               itemBuilder: (context, index){
-                return _buildSlideItem(slideModelList[index]);
+                return _buildSlideItem(event[index]);
               },
             ),
           ),
@@ -170,9 +176,9 @@ class _HomeScreenState extends State<HomeScreen> {
       );
   }
 
-  Widget _buildSlideItem(SlideModel slide){
+  Widget _buildSlideItem(Event items){
     return  _navigateToDetailScreen(
-      slide,
+      items,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -183,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       topLeft: Radius.circular(20),
                       topRight: Radius.circular(20),
                     ),
-                    child: Image.network(slide.img,
+                    child: Image.network(items.featureImage,
                     fit: BoxFit.cover,
                     width: MediaQuery.sizeOf(context).width,
                     height: 150,
@@ -199,12 +205,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
-                      //padding: EdgeInsets.all(10),
+                      padding: EdgeInsets.all(5),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(slide.date.substring(0,2), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black)),
-                        Text(slide.date.substring(3, 6), style: TextStyle(fontSize: 12, color: Colors.black),),
+                        Text((DateFormat('MMM dd, yyyy').format(DateTime.parse(items.startDate)).substring(0,3)), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black)),
+                        Text((DateFormat('MMM dd, yyyy').format(DateTime.parse(items.startDate)).substring(4,6)), style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.black)),
                       ],
                     ),
                     ),
@@ -215,14 +222,15 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
               padding: const EdgeInsets.only(left: 20, right: 20),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
                         Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text(
-                            slide.title,
+                            items.title,
                             style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold, color: Colors.black),
                             ),
                             SizedBox(height: 5,),
@@ -230,29 +238,29 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: [
                                 Icon(Icons.location_on, color: Colors.grey[500], size: 20),
                                 SizedBox(width: 5),
-                                Text(slide.address, style: TextStyle(fontSize: 16, color: Colors.grey[500]),
+                                Text(items.address, style: TextStyle(fontSize: 16, color: Colors.grey[500]),
                                 ),
                               ],
                             ),
                           ],
                         ),
                         Spacer(),
-                        Row(children: [
-                          Container(
-                          width: 50,
-                          padding: EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                            color: Color(0xFF455AF7),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Center(
-                          child:
-                            Text(slide.attendence.toString(), style: TextStyle(fontSize: 18, color: Colors.white),
-                            ),
+                        // Row(children: [
+                        //   Container(
+                        //   width: 50,
+                        //   padding: EdgeInsets.all(5),
+                        //   decoration: BoxDecoration(
+                        //     color: Color(0xFF455AF7),
+                        //     shape: BoxShape.circle,
+                        //   ),
+                        //   child: Center(
+                        //   child:
+                        //     Text(items.categories.toString(), style: TextStyle(fontSize: 18, color: Colors.white),
+                        //     ),
                           
-                        )
-                        ),
-                        ],)
+                        // )
+                        // ),
+                        // ],)
                       ],
                     ),
                     
@@ -263,11 +271,11 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-  Widget _navigateToDetailScreen(SlideModel post,{Widget? child}){
+  Widget _navigateToDetailScreen(Event items,{Widget? child}){
     return GestureDetector(
       onTap: (){
         Navigator.push(context,
-          MaterialPageRoute(builder: (context) => DetailScreen(post),)
+          MaterialPageRoute(builder: (context) => DetailScreen(items),)
         );
       },
       child: child,

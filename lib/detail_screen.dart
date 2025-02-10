@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project_ii/api_module/event_model.dart';
 import 'package:flutter_project_ii/slide_model.dart';
 
 class DetailScreen extends StatefulWidget {
   //const DetailScreen({super.key});
 
-  SlideModel post;
+  Event post;
   DetailScreen(this.post, {super.key});
 
   @override
@@ -78,7 +79,7 @@ class _DetailScreenState extends State<DetailScreen> {
           width: double.infinity,
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: NetworkImage(widget.post.img),
+              image: NetworkImage(widget.post.featureImage),
               fit: BoxFit.cover,
             ),
           ),
@@ -98,7 +99,7 @@ class _DetailScreenState extends State<DetailScreen> {
             const Spacer(),
             Padding(
               padding: const EdgeInsets.all(20.0),
-              child: Text(widget.post.date, style: TextStyle(color: Color(0xFF455AF7)),),
+              child: Text(widget.post.startDate, style: TextStyle(color: Color(0xFF455AF7)),),
             ),
           ],
         ),
