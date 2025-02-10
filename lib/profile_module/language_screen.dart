@@ -39,7 +39,7 @@ class _ChangeLanguageScreenState extends State<ChangeLanguageScreen> {
       body: Container(
         padding: EdgeInsets.all(30),
         child: Container(
-          color: Color(0xFF1E2630),
+        //color: Color(0xFF1E2630),
         padding: EdgeInsets.all(20),
           child: Row(
             children: [
@@ -48,8 +48,9 @@ class _ChangeLanguageScreenState extends State<ChangeLanguageScreen> {
                   children: [
                     Container(
                       padding: EdgeInsets.only(bottom: 10),
+                      color: Colors.white,
                       decoration: BoxDecoration(
-                        border: Border(bottom: BorderSide(color: Colors.grey),), 
+                        borderRadius: BorderRadius.all(Radius.circular(20))
                       ),
                       child: ListTile(
                         title: Column(

@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_project_ii/detail_screen.dart';
+import 'package:flutter_project_ii/language_logic.dart';
+import 'package:flutter_project_ii/profile_module/information_screen.dart';
 import 'package:flutter_project_ii/profile_module/language_screen.dart';
 import 'package:flutter_project_ii/slide_model.dart';
 import 'package:flutter_project_ii/tickets/ticket_detail_screen.dart';
+import 'package:provider/provider.dart';
 
 enum ChangeWidget {
   grid,
@@ -19,12 +22,15 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+
   ChangeWidget selectedWidget = ChangeWidget.grid;
   bool isSelected = false;
+  int _langIndex = 0;
   @override
 
   
   Widget build(BuildContext context) {
+    
     return Scaffold(
       
       body: Container(
@@ -236,6 +242,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildSettingItem(){
+    int _langIndex = context.watch<LanguageLogic>().langIndex;
     return Container(
       padding: EdgeInsets.only(left: 30, right: 30, top: 40,),
       child: Column(
@@ -260,7 +267,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ],
           ),
           SizedBox(height: 30,),
-          Row(
+          GestureDetector(
+            onTap: (){
+              // Navigate to change password screen
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PersonalInformationScreen(),
+                ),
+              );
+            },
+            child: Row(
             children: [
               Container(
                 width: 40,
@@ -278,6 +295,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Spacer(),
               Icon(Icons.navigate_next_sharp, color: Colors.grey.shade500,size: 34,)
             ],
+          ),
           ),
           SizedBox(height: 30,),
           GestureDetector(
@@ -306,7 +324,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
               ),
               Spacer(),
-              Text('English', style: TextStyle(color: Colors.grey.shade500),),
+              Text(_langIndex == 1 ? "Khmer" : "English", 
+              style: TextStyle(color: Colors.grey.shade500),),
               SizedBox(width: 10,),
               Icon(Icons.navigate_next_sharp, color: Colors.grey.shade500,size: 34,)
             ],

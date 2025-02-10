@@ -31,9 +31,11 @@ class _TicketsScreenState extends State<TicketsScreen>
       appBar: AppBar(
         backgroundColor: Color(0xFF1A202C),
         title: Text('My Ticket', style: TextStyle(color: Colors.white)),
+        centerTitle: true,
       ),
       body: Column(
         children: [
+          SizedBox(height: 20,),
           // Custom Tab Bar
           Container(
             margin: EdgeInsets.symmetric(horizontal: 16),
