@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project_ii/language_data.dart';
+import 'package:flutter_project_ii/profile_module/language_data.dart';
 
 class LanguageLogic extends ChangeNotifier{
   Language _language = Language();

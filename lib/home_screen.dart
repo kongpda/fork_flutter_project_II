@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project_ii/category_module/all_category.dart';
 import 'package:flutter_project_ii/api_module/event_logic.dart';
 import 'package:flutter_project_ii/api_module/event_model.dart';
 import 'package:flutter_project_ii/category_module/category_app.dart';
 import 'package:flutter_project_ii/detail_screen.dart';
-import 'package:flutter_project_ii/language_data.dart';
-import 'package:flutter_project_ii/language_logic.dart';
+import 'package:flutter_project_ii/profile_module/language_data.dart';
+import 'package:flutter_project_ii/profile_module/language_logic.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 

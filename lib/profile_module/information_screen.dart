@@ -21,13 +21,14 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
         ),
       ),
       body: Container(
+        padding: EdgeInsets.only(left: 20,right: 20),
         color: Color(0xFF1A202C),
         child: SizedBox(
           width: MediaQuery.sizeOf(context).width,
           height: MediaQuery.sizeOf(context).height,
           child: Column(
             children: [
-              SizedBox(height: 150,),
+              SizedBox(height: 50,),
               
               Container(
               padding: const EdgeInsets.all(2),
@@ -48,9 +49,151 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                   Text("Levineadam@mail.com", style: TextStyle(color: Colors.grey.shade400),),
                 ],
               ),
+              SizedBox(height: 30,)
+,              Column(
+                children: [
+                  _buildUsernameInput(),
+                  SizedBox(height: 30,),
+                  _buildEmailInput(),
+                  SizedBox(height: 30,),
+                  _buildPasswordInput(),
+                  SizedBox(height: 80,),
+                  __buildSaveButton(),
+                ],
+              ),
             ],
           ),
         ),
+      ),
+    );
+  }
+  
+  Widget _buildUsernameInput() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("Username",style: TextStyle(fontSize: 18,color: Colors.white),),
+        SizedBox(height: 15,),
+        Container(
+          padding: EdgeInsets.only(left: 20),
+          height: 70,
+          width: double.maxFinite,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey.shade800),
+            borderRadius: BorderRadius.all(Radius.circular(20))
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextFormField(
+                decoration: InputDecoration(
+                  icon: Icon(Icons.person_outline_sharp,color: Colors.white,),
+                  hintText: 'Adam John Levine',
+                  hintStyle: TextStyle(color: Colors.white),
+                  border: InputBorder.none,
+                ),
+                style: TextStyle(color: Colors.white, fontSize: 18),
+                textInputAction: TextInputAction.send,
+                keyboardType: TextInputType.text,
+                autocorrect: false,
+              ),
+            ],
+          )
+        ),
+      ],
+    );
+  }
+  Widget _buildEmailInput() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("Email",style: TextStyle(fontSize: 18,color: Colors.white),),
+        SizedBox(height: 15,),
+        Container(
+          padding: EdgeInsets.only(left: 20),
+          height: 70,
+          width: double.maxFinite,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey.shade800),
+            borderRadius: BorderRadius.all(Radius.circular(20))
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextFormField(
+                decoration: InputDecoration(
+                  icon: Icon(Icons.email_outlined,color: Colors.white,),
+                  hintText: 'Levineadam@mail.com',
+                  hintStyle: TextStyle(color: Colors.white),
+                  border: InputBorder.none,
+                ),
+                style: TextStyle(color: Colors.white, fontSize: 18),
+                textInputAction: TextInputAction.send,
+                keyboardType: TextInputType.text,
+                autocorrect: false,
+              ),
+            ],
+          )
+        ),
+      ],
+    );
+  }
+  bool _hidePassword = true;
+  Widget _buildPasswordInput() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("Password",style: TextStyle(fontSize: 18,color: Colors.white),),
+        SizedBox(height: 15,),
+        Container(
+          padding: EdgeInsets.only(left: 20),
+          height: 70,
+          width: double.maxFinite,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey.shade800),
+            borderRadius: BorderRadius.all(Radius.circular(20))
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextFormField(
+                decoration: InputDecoration(
+                  icon: Icon(Icons.lock_outline_rounded,color: Colors.white,),
+                  hintText: '',
+                  hintStyle: TextStyle(color: Colors.white),
+                  border: InputBorder.none,
+                  suffixIcon: IconButton(onPressed: (){
+                    setState(() {
+                      _hidePassword =!_hidePassword;
+                    });
+                  }, 
+                  icon: Icon(_hidePassword ? Icons.visibility_off : Icons.visibility) )       
+                ),
+                style: TextStyle(color: Colors.white, fontSize: 18),
+                textInputAction: TextInputAction.send,
+                keyboardType: TextInputType.text,
+                autocorrect: false,
+                obscureText: _hidePassword,
+              ),
+            ],
+          )
+        ),
+      ],
+    );
+  }
+  Widget __buildSaveButton(){
+    return SizedBox(
+      height: 60,
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: () {},
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color(0xFF0466C8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        child: const Text('Save Change', style: TextStyle(fontSize: 20, color: Colors.white)),
       ),
     );
   }

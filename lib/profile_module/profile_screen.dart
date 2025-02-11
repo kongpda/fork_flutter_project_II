@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_project_ii/detail_screen.dart';
-import 'package:flutter_project_ii/language_logic.dart';
+import 'package:flutter_project_ii/profile_module/language_logic.dart';
 import 'package:flutter_project_ii/profile_module/information_screen.dart';
 import 'package:flutter_project_ii/profile_module/language_screen.dart';
 import 'package:flutter_project_ii/slide_model.dart';
@@ -361,10 +361,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   color: Colors.grey.shade900,
                   borderRadius: BorderRadius.all(Radius.circular(20))
                 ),
-                child: Icon(Icons.question_mark_rounded, color: Color(0xFF455AF7),)
+                child: Icon(Icons.logout_outlined, color: Color(0xFF455AF7),)
               ),
               SizedBox(width: 30,),
-              Text("FAQ", style: 
+              Text("Logout", style: 
                 TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
               ),
               Spacer(),
