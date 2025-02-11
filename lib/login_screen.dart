@@ -1,27 +1,39 @@
 import 'package:flutter/material.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
 
+class _LoginScreenState extends State<LoginScreen> {
+  //const LoginScreen({super.key});
+
+  bool _hidePassword = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leadingWidth: 80,
         backgroundColor: Color(0xFF11151C),
-        title: Container(
-          padding: EdgeInsets.all(2),
-          decoration: BoxDecoration(
-            color: Color.fromARGB(255, 31, 36, 45),
-            borderRadius: BorderRadius.circular(10),
-          ),
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 15),
           child: Container(
-            margin: EdgeInsets.only(left: 10),
-            child:
-              IconButton(onPressed: (){}, 
-            icon: Icon(Icons.arrow_back_ios, color: Colors.white,size: 20,),
-            style: ButtonStyle(alignment: Alignment.center,),
+            padding: EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              color: Color.fromARGB(255, 31, 36, 45),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Container(
+              margin: EdgeInsets.only(left: 10),
+              child:
+                IconButton(onPressed: (){
+                  Navigator.pop(context);
+                }, 
+              icon: Icon(Icons.arrow_back_ios, color: Colors.white,size: 20,),
+              style: ButtonStyle(alignment: Alignment.center,),
+            ),
+            )
           ),
-          )
         ),
       ),
       body: Container(
@@ -32,9 +44,6 @@ class LoginScreen extends StatelessWidget {
             SizedBox(height: 20),
             Text("Sign Up", style: TextStyle(fontSize: 28, color: Colors.white)),
             SizedBox(height: 20),
-            SizedBox(
-              child: Column(
-                children: [
                   Container(
                     height: 60,
                     width: double.infinity,
@@ -43,17 +52,22 @@ class LoginScreen extends StatelessWidget {
                       border: Border.all(color: Colors.grey.shade800),
                     ),
                     padding: EdgeInsets.only(left: 20),
-                    child: TextFormField(
-                      style: TextStyle(fontSize: 18, color: Colors.white),
-                      decoration: InputDecoration(
-                        icon: Icon(Icons.person, color: Colors.grey.shade600, size: 25),
-                        hintText: 'Username',
-                        hintStyle: TextStyle(fontSize: 18, color: Colors.grey.shade700),
-                        border: InputBorder.none,
-                      ),
-                      textInputAction: TextInputAction.send,
-                      keyboardType: TextInputType.text,
-                      autocorrect: false,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextFormField(
+                          style: TextStyle(fontSize: 18, color: Colors.white),
+                          decoration: InputDecoration(
+                            icon: Icon(Icons.person, color: Colors.grey.shade600, size: 25),
+                            hintText: 'Username',
+                            hintStyle: TextStyle(fontSize: 18, color: Colors.grey.shade700),
+                            border: InputBorder.none,
+                          ),
+                          textInputAction: TextInputAction.send,
+                          keyboardType: TextInputType.text,
+                          autocorrect: false,
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(height: 20),
@@ -64,18 +78,23 @@ class LoginScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(color: Colors.grey.shade800),
                     ),
-                      padding: EdgeInsets.only(left: 20),
-                    child: TextFormField(
-                      style: TextStyle(fontSize: 18, color: Colors.white),
-                      decoration: InputDecoration(
-                        icon: Icon(Icons.email_outlined, color: Colors.grey.shade600, size: 25),
-                        hintText: 'Email',
-                        hintStyle: TextStyle(fontSize: 18, color: Colors.grey.shade700),
-                        border: InputBorder.none,
-                      ),
-                      textInputAction: TextInputAction.send,
-                      keyboardType: TextInputType.text,
-                      autocorrect: false,
+                    padding: EdgeInsets.only(left: 20),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextFormField(
+                          style: TextStyle(fontSize: 18, color: Colors.white),
+                          decoration: InputDecoration(
+                            icon: Icon(Icons.email_outlined, color: Colors.grey.shade600, size: 25),
+                            hintText: 'Email',
+                            hintStyle: TextStyle(fontSize: 18, color: Colors.grey.shade700),
+                            border: InputBorder.none,
+                          ),
+                          textInputAction: TextInputAction.send,
+                          keyboardType: TextInputType.text,
+                          autocorrect: false,
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(height: 20),
@@ -86,26 +105,33 @@ class LoginScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(color: Colors.grey.shade800),
                     ),
-                      padding: EdgeInsets.only(left: 20, right: 20),
-                    child: TextFormField(
-                      
-                      style: TextStyle(fontSize: 18, color: Colors.white),
-                      decoration: InputDecoration(
-                        icon: Icon(Icons.lock_open_outlined, color: Colors.grey.shade600, size: 25),
-                        hintText: 'Password',
-                        hintStyle: TextStyle(fontSize: 18, color: Colors.grey.shade700),
-                        border: InputBorder.none,
-                        suffixIcon: IconButton(onPressed: (){}, icon: Icon(Icons.remove_red_eye, color: Colors.grey.shade600, size: 25)),
-                      ),
-                      textInputAction: TextInputAction.send,
-                      keyboardType: TextInputType.text,
-                      autocorrect: false,
+                    padding: EdgeInsets.only(left: 20, right: 20),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextFormField(
+                          style: TextStyle(fontSize: 18, color: Colors.white),
+                          decoration: InputDecoration(
+                            icon: Icon(Icons.lock_open_outlined, color: Colors.grey.shade600, size: 25),
+                            hintText: 'Password',
+                            hintStyle: TextStyle(fontSize: 18, color: Colors.grey.shade700),
+                            border: InputBorder.none,
+                            suffixIcon: IconButton(onPressed: (){
+                              setState(() {
+                                _hidePassword =!_hidePassword;
+                              });
+                            }, 
+                            icon: Icon(_hidePassword ? Icons.visibility_off : Icons.visibility)),
+                          ),
+                          textInputAction: TextInputAction.send,
+                          autocorrect: false,
+                          obscureText: _hidePassword,
+                        ),
+                      ],
                     ),
                     
                   ),
-                ],
-              ),
-            ),
+             
             
             SizedBox(height: 40),
             SizedBox(

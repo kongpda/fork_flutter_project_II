@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_project_ii/api_module/event_provider.dart';
 import 'package:flutter_project_ii/login_screen.dart';
 
 class GetStartScreen extends StatelessWidget {
@@ -14,10 +16,16 @@ class GetStartScreen extends StatelessWidget {
           children: [
             SizedBox(height: 50),
             Row( 
-              
               children: [
-                Expanded(child: Container()),
-                Text("Skip", style: TextStyle(fontSize: 20,color: Colors.white)),
+                Expanded(child: 
+                ListTile(
+                  onTap: (){
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => eventProvider()),
+                    );
+                  },
+                  title: Text("Skip", style: TextStyle(fontSize: 20,color: Colors.white)),
+                )),
               ],
             ),
             Container(
@@ -43,7 +51,7 @@ class GetStartScreen extends StatelessWidget {
               //alignment: Alignment.bottomCenter,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+                  Navigator.of(context).push( CupertinoPageRoute(builder: (context) => LoginScreen()));
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF0466C8),

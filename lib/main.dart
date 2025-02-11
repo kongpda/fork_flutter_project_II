@@ -1,8 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project_ii/main_screen.dart';
+import 'package:flutter_project_ii/api_module/event_provider.dart';
+import 'package:flutter_project_ii/category_module/category_service.dart';
+import 'package:flutter_project_ii/profile_module/language_logic.dart';
+import 'package:flutter_project_ii/start_screen.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(provider());
+}
+
+Widget provider(){
+  return MultiProvider(providers: [
+    ChangeNotifierProvider(create: (create) => LanguageLogic()),
+    ChangeNotifierProvider(create: (create) => CategoryLogic()),
+
+  ],
+  child: MyApp(),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -12,7 +26,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: MainScreen(),
+      home: GetStartScreen(),
     );
   }
 }
