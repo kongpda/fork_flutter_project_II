@@ -100,4 +100,24 @@ class AuthProvider extends ChangeNotifier {
     await prefs.setBool(_firstTimeKey, false);
     notifyListeners();
   }
+
+  Future<Map<String, dynamic>> signup(
+      String name, String email, String password) async {
+    try {
+      final deviceName = await _getDeviceName();
+      final result =
+          await AuthService.signup(name, email, password, deviceName);
+
+      if (result['success']) {
+        _token = result['data']['token'];
+        await _storage.write(key: _tokenKey, value: _token);
+        _isAuthenticated = true;
+        notifyListeners();
+      }
+      return result;
+    } catch (e) {
+      print('Signup error: $e');
+      return {'success': false, 'message': e.toString()};
+    }
+  }
 }
