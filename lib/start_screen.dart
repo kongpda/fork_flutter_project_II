@@ -1,7 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_project_ii/auth_model/loading_screen.dart';
 import 'package:flutter_project_ii/login_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_project_ii/auth/auth.dart';
 
 class GetStartScreen extends StatelessWidget {
   const GetStartScreen({super.key});
@@ -14,25 +15,7 @@ class GetStartScreen extends StatelessWidget {
         color: Color(0xFF11151C),
         child: Column(
           children: [
-<<<<<<< HEAD
-            
-=======
             SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                    child: ListTile(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => eventProvider()),
-                    );
-                  },
-                  title: Text("Skip",
-                      style: TextStyle(fontSize: 20, color: Colors.white)),
-                )),
-              ],
-            ),
->>>>>>> c1160f89df23f83510218072b823e3e374214cfa
             Container(
               margin: const EdgeInsets.only(top: 200),
               child:
@@ -56,15 +39,13 @@ class GetStartScreen extends StatelessWidget {
             SizedBox(
               height: 60,
               width: double.infinity,
-              //alignment: Alignment.bottomCenter,
               child: ElevatedButton(
-                onPressed: () {
-<<<<<<< HEAD
-                  Navigator.of(context).push( CupertinoPageRoute(builder: (context) => LoadingScreen()));
-=======
-                  Navigator.of(context).push(
-                      CupertinoPageRoute(builder: (context) => LoginScreen()));
->>>>>>> c1160f89df23f83510218072b823e3e374214cfa
+                onPressed: () async {
+                  await Provider.of<AuthProvider>(context, listen: false)
+                      .completeOnboarding();
+                  if (context.mounted) {
+                    Navigator.pushReplacementNamed(context, '/login');
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF0466C8),
