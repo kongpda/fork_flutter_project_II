@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project_ii/api_module/event_logic.dart';
-<<<<<<< HEAD
-import 'package:flutter_project_ii/auth_model/login_logic.dart';
-=======
 import 'package:flutter_project_ii/auth/auth.dart';
 import 'package:flutter_project_ii/auth/login_screen.dart';
 import 'package:flutter_project_ii/auth/screens/forgot_password_screen.dart';
 import 'package:flutter_project_ii/auth/signup_screen.dart';
->>>>>>> c1160f89df23f83510218072b823e3e374214cfa
 import 'package:flutter_project_ii/category_module/category_service.dart';
 import 'package:flutter_project_ii/main_screen.dart';
 import 'package:flutter_project_ii/profile_module/language_logic.dart';
@@ -18,17 +14,8 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-<<<<<<< HEAD
-Widget provider(){
-  return MultiProvider(providers: [
-    ChangeNotifierProvider(create: (create) => LanguageLogic()),
-    ChangeNotifierProvider(create: (create) => CategoryLogic()),
-    ChangeNotifierProvider(create: (context) => LoginLogic()),
-    ChangeNotifierProvider(create: (context) => EventLogic()),
-=======
   final authProvider = AuthProvider();
   await authProvider.init();
->>>>>>> c1160f89df23f83510218072b823e3e374214cfa
 
   runApp(
     MultiProvider(
@@ -61,9 +48,13 @@ class MyApp extends StatelessWidget {
         '/forgot-password': (context) => const ForgotPasswordScreen(),
         '/login': (context) => const LoginScreen(),
         '/profile': (context) => const ProfileScreen(),
+        '/start': (context) => const GetStartScreen(),
       },
       home: Consumer<AuthProvider>(
         builder: (context, authProvider, child) {
+          if (authProvider.isFirstTime) {
+            return const GetStartScreen();
+          }
           return authProvider.isAuthenticated
               ? const MainScreen()
               : const LoginScreen();
