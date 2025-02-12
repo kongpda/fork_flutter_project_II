@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project_ii/api_module/event_provider.dart';
+import 'package:flutter_project_ii/api_module/event_logic.dart';
+import 'package:flutter_project_ii/auth_model/login_logic.dart';
 import 'package:flutter_project_ii/category_module/category_service.dart';
 import 'package:flutter_project_ii/profile_module/language_logic.dart';
 import 'package:flutter_project_ii/start_screen.dart';
@@ -13,6 +14,8 @@ Widget provider(){
   return MultiProvider(providers: [
     ChangeNotifierProvider(create: (create) => LanguageLogic()),
     ChangeNotifierProvider(create: (create) => CategoryLogic()),
+    ChangeNotifierProvider(create: (context) => LoginLogic()),
+    ChangeNotifierProvider(create: (context) => EventLogic()),
 
   ],
   child: MyApp(),
