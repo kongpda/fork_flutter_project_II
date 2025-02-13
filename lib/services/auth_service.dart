@@ -2,14 +2,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_project_ii/services/api_constants.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'dart:io' show Platform;
-import 'package:flutter/foundation.dart' show kDebugMode;
 
 class AuthService {
   static final GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: ['email', 'profile'],
     serverClientId:
-        '459272499632-23o317mfmb3ohi3vfigois805luoaaet.apps.googleusercontent.com', // Optional: needed for backend auth
+        '459272499632-23o317mfmb3ohi3vfigois805luoaaet.apps.googleusercontent.com',
   );
 
   static Future<Map<String, dynamic>> login(
@@ -27,12 +25,28 @@ class AuthService {
         }),
       );
 
+      final responseData = json.decode(response.body);
+
       if (response.statusCode == 200) {
-        return {'success': true, 'data': json.decode(response.body)};
+        return {'success': true, 'data': responseData};
       }
-      return {'success': false, 'message': 'Login failed'};
+
+      String errorMessage = 'Login failed';
+      if (response.statusCode == 422) {
+        errorMessage = 'Invalid email or password';
+      } else if (response.statusCode == 429) {
+        errorMessage = 'Too many attempts. Please try again later';
+      } else if (responseData['message'] != null) {
+        errorMessage = responseData['message'];
+      }
+
+      return {'success': false, 'message': errorMessage};
     } catch (e) {
-      return {'success': false, 'message': e.toString()};
+      String errorMessage = 'Connection error';
+      if (e.toString().contains('SocketException')) {
+        errorMessage = 'No internet connection';
+      }
+      return {'success': false, 'message': errorMessage};
     }
   }
 
@@ -59,17 +73,19 @@ class AuthService {
           'Content-Type': 'application/json',
         },
       );
-      return response.statusCode == 200;
+
+      if (response.statusCode != 200) {
+        throw Exception('Logout failed');
+      }
+      return true;
     } catch (e) {
-      return false;
+      throw Exception('Failed to logout');
     }
   }
 
   static Future<Map<String, dynamic>> signup(
       String name, String email, String password, String deviceName) async {
     try {
-      print('Attempting signup with email: $email and device: $deviceName');
-
       final response = await http.post(
         Uri.parse(ApiConstants.authRegister),
         headers: {
@@ -85,179 +101,159 @@ class AuthService {
         }),
       );
 
-      print('Registration response status: ${response.statusCode}');
-      print('Registration response body: ${response.body}');
-
       if (response.statusCode == 201) {
         return {'success': true, 'data': json.decode(response.body)};
       }
 
-      // Parse error message from response if possible
       Map<String, dynamic> errorBody;
       try {
         errorBody = json.decode(response.body);
+
+        if (response.statusCode == 422 && errorBody.containsKey('errors')) {
+          final errors = errorBody['errors'] as Map<String, dynamic>;
+          final messages = errors.values
+              .expand((e) => (e as List).map((msg) => msg.toString()))
+              .toList();
+          return {
+            'success': false,
+            'message': messages.join('\n'),
+            'status': response.statusCode
+          };
+        }
+
+        switch (response.statusCode) {
+          case 400:
+            return {
+              'success': false,
+              'message': 'Invalid request. Please check your information.',
+              'status': response.statusCode
+            };
+          case 401:
+            return {
+              'success': false,
+              'message': 'Unauthorized. Please try again.',
+              'status': response.statusCode
+            };
+          case 409:
+            return {
+              'success': false,
+              'message': 'This email is already registered.',
+              'status': response.statusCode
+            };
+          default:
+            return {
+              'success': false,
+              'message': errorBody['message'] ??
+                  'Something went wrong. Please try again later.',
+              'status': response.statusCode
+            };
+        }
       } catch (e) {
-        errorBody = {};
+        return {
+          'success': false,
+          'message': 'Unable to process your request. Please try again later.',
+          'status': response.statusCode
+        };
+      }
+    } catch (e) {
+      String errorMessage = 'Unable to connect to the server.';
+
+      if (e.toString().contains('SocketException')) {
+        errorMessage = 'No internet connection. Please check your network.';
+      } else if (e.toString().contains('TimeoutException')) {
+        errorMessage = 'Request timed out. Please try again.';
       }
 
-      return {
-        'success': false,
-        'message': errorBody['message'] ??
-            'Registration failed with status ${response.statusCode}',
-        'status': response.statusCode
-      };
-    } catch (e) {
-      print('Registration error: $e');
-      return {'success': false, 'message': e.toString()};
+      return {'success': false, 'message': errorMessage};
     }
   }
 
-  static Future<Map<String, dynamic>> signInWithGoogle() async {
+  static Future<Map<String, dynamic>> signInWithGoogle(
+      String deviceName) async {
     try {
-      // Check if running in debug mode on iOS
-      if (kDebugMode && Platform.isIOS) {
-        print('Running on iOS in Debug Mode');
-        try {
-          if (await _googleSignIn.isSignedIn()) {
-            await _googleSignIn.signOut();
-          }
-
-          final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-          if (googleUser != null) {
-            final GoogleSignInAuthentication googleAuth =
-                await googleUser.authentication;
-
-            final headers = {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              'X-Requested-With': 'XMLHttpRequest',
-            };
-
-            final body = {
-              'access_token': googleAuth.accessToken,
-              'device_name': Platform.isIOS ? 'ios_device' : 'android_device',
-            };
-
-            // Debug logging
-            print('Making request to: ${ApiConstants.googleLogin}');
-            print('Method: POST');
-            print('Headers: $headers');
-            print('Body: ${json.encode(body)}');
-
-            // Updated HTTP request
-            final response = await http.post(
-              Uri.parse(ApiConstants.googleLogin),
-              headers: headers,
-              body: json.encode(body),
-            );
-
-            print('Server response status: ${response.statusCode}');
-            print('Server response body: ${response.body}');
-
-            if (response.statusCode == 200) {
-              final responseData = json.decode(response.body);
-              return {'success': true, 'data': responseData};
-            }
-
-            // Try to parse error message from response
-            Map<String, dynamic> errorData = {};
-            try {
-              errorData = json.decode(response.body);
-            } catch (e) {
-              print('Failed to parse error response: $e');
-            }
-
-            return {
-              'success': false,
-              'message':
-                  errorData['message'] ?? 'Failed to authenticate with server',
-              'error': errorData['error']
-            };
-          }
-          return {'success': false, 'message': 'Google sign in cancelled'};
-        } catch (e) {
-          print('Google Sign In failed in iOS Debug Mode: $e');
-          // Debug mode mock data
-          return {
-            'success': true,
-            'data': {
-              'token': 'mock_token_for_debug',
-              'user': {
-                'email': 'test@example.com',
-                'name': 'Test User',
-                'photoUrl': 'https://example.com/photo.jpg',
-              }
-            }
-          };
-        }
+      // Force disconnect and sign out to ensure clean state
+      try {
+        await _googleSignIn.disconnect();
+      } catch (e) {
+        print('Disconnect error (ignorable): $e');
       }
-
-      // Non-debug mode flow
-      print('Initializing Google Sign In...');
-      if (await _googleSignIn.isSignedIn()) {
+      try {
         await _googleSignIn.signOut();
+      } catch (e) {
+        print('SignOut error (ignorable): $e');
       }
 
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      print('Google User: ${googleUser?.email}');
+      // Wait a brief moment to ensure cleanup is complete
+      await Future.delayed(const Duration(milliseconds: 500));
 
+      // Attempt to sign in and catch specific errors
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
+        print('Google Sign In Error: User cancelled the sign-in flow');
         return {'success': false, 'message': 'Sign in aborted by user'};
       }
 
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-      print('Got Google Auth');
-
-      final headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest',
-      };
-
-      final body = {
-        'access_token': googleAuth.accessToken,
-        'device_name': Platform.isIOS ? 'ios_device' : 'android_device',
-      };
-
-      // Debug logging
-      print('Making request to: ${ApiConstants.googleLogin}');
-      print('Method: POST');
-      print('Headers: $headers');
-      print('Body: ${json.encode(body)}');
-
-      // Updated HTTP request for non-debug mode
-      final response = await http.post(
-        Uri.parse(ApiConstants.googleLogin),
-        headers: headers,
-        body: json.encode(body),
-      );
-
-      print('Server response status: ${response.statusCode}');
-      print('Server response body: ${response.body}');
-
-      if (response.statusCode == 200) {
-        final responseData = json.decode(response.body);
-        return {'success': true, 'data': responseData};
-      }
-
-      // Try to parse error message from response
-      Map<String, dynamic> errorData = {};
       try {
-        errorData = json.decode(response.body);
+        final GoogleSignInAuthentication googleAuth =
+            await googleUser.authentication;
+        if (googleAuth.accessToken == null) {
+          print('Google Sign In Error: No access token received');
+          return {
+            'success': false,
+            'message': 'Failed to get Google authentication token'
+          };
+        }
+
+        final response = await http.post(
+          Uri.parse(ApiConstants.socialLogin),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          body: json.encode({
+            'access_token': googleAuth.accessToken,
+            'device_name': deviceName,
+            'email': googleUser.email,
+            'name': googleUser.displayName,
+            'photo_url': googleUser.photoUrl,
+            'provider': 'google',
+            'provider_user_id': googleUser.id,
+          }),
+        );
+
+        print('Google Auth API Response Status: ${response.statusCode}');
+        print('Google Auth API Response Body: ${response.body}');
+
+        if (response.statusCode == 200) {
+          return {'success': true, 'data': json.decode(response.body)};
+        }
+
+        Map<String, dynamic> errorData = {};
+        try {
+          errorData = json.decode(response.body);
+        } catch (e) {
+          return {'success': false, 'message': 'Authentication failed'};
+        }
+
+        return {
+          'success': false,
+          'message': errorData['message'] ?? 'Authentication failed'
+        };
       } catch (e) {
-        print('Failed to parse error response: $e');
+        String errorMessage = 'Google sign in failed';
+
+        if (e.toString().contains('network_error')) {
+          errorMessage = 'No internet connection';
+        } else if (e.toString().contains('sign_in_failed')) {
+          errorMessage = 'Sign in failed - please try again';
+        } else if (e.toString().contains('sign_in_canceled')) {
+          errorMessage = 'Sign in was canceled';
+        }
+
+        return {'success': false, 'message': errorMessage};
       }
-
-      return {
-        'success': false,
-        'message': errorData['message'] ?? 'Failed to authenticate with server',
-        'error': errorData['error']
-      };
-    } catch (e, stackTrace) {
-      print('Error in signInWithGoogle: $e');
-      print('Stack trace: $stackTrace');
-
+    } catch (e) {
       String errorMessage = 'Google sign in failed';
 
       if (e.toString().contains('network_error')) {
@@ -268,7 +264,7 @@ class AuthService {
         errorMessage = 'Sign in was canceled';
       }
 
-      return {'success': false, 'message': errorMessage, 'error': e.toString()};
+      return {'success': false, 'message': errorMessage};
     }
   }
 }

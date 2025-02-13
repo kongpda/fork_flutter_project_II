@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../services/auth_service.dart';
 import '../auth/auth.dart';
 import '../main_screen.dart';
 
-class GoogleSignInButton extends StatelessWidget {
-  const GoogleSignInButton({super.key});
+class GoogleAuthButton extends StatelessWidget {
+  final String buttonText;
+
+  const GoogleAuthButton({
+    super.key,
+    this.buttonText = 'Sign in with Google',
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -14,6 +18,7 @@ class GoogleSignInButton extends StatelessWidget {
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        minimumSize: const Size.fromHeight(48),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
           side: const BorderSide(color: Colors.grey),
@@ -30,21 +35,15 @@ class GoogleSignInButton extends StatelessWidget {
             ),
           );
 
-          print('Starting Google Sign In...'); // Debug log
-          final result = await AuthService.signInWithGoogle();
-          print('Sign In Result: $result'); // Debug log
+          final authProvider =
+              Provider.of<AuthProvider>(context, listen: false);
+          final result = await authProvider.signInWithGoogle();
 
           // Close loading indicator
           if (!context.mounted) return;
           Navigator.pop(context);
 
           if (result['success']) {
-            // Store token in auth provider
-            final token = result['data']['token'];
-            final authProvider =
-                Provider.of<AuthProvider>(context, listen: false);
-            await authProvider.setToken(token);
-
             // Navigate to main screen
             if (!context.mounted) return;
             Navigator.pushReplacement(
@@ -54,37 +53,34 @@ class GoogleSignInButton extends StatelessWidget {
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(result['message'] ?? 'Google sign in failed'),
+                content:
+                    Text(result['message'] ?? 'Google authentication failed'),
                 backgroundColor: Colors.red,
               ),
             );
           }
-        } catch (e, stackTrace) {
-          print('Error during Google Sign In: $e'); // Debug log
-          print('Stack trace: $stackTrace'); // Debug log
-
+        } catch (e) {
           if (!context.mounted) return;
           Navigator.pop(context); // Close loading indicator
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Sign in error: ${e.toString()}'),
+              content: Text('Authentication error: ${e.toString()}'),
               backgroundColor: Colors.red,
             ),
           );
         }
       },
       child: Row(
-        mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.asset(
             'assets/images/google_logo.png',
             height: 24.0,
           ),
-          const SizedBox(width: 12.0),
-          const Text(
-            'Sign in with Google',
-            style: TextStyle(
+          const SizedBox(width: 12),
+          Text(
+            buttonText,
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w500,
             ),

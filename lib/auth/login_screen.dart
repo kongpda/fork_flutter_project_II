@@ -9,7 +9,8 @@ import 'package:provider/provider.dart';
 import 'auth.dart';
 import '../utils/device_utils.dart';
 import '../services/auth_service.dart';
-import '../widgets/google_sign_in_button.dart';
+import '../widgets/google_auth_button.dart';
+import '../widgets/error_message.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -117,16 +118,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     if (email.isEmpty || password.isEmpty) {
                       if (!mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Please fill in all fields')),
-                      );
+                      showErrorToast('Please fill in all fields');
                       return;
                     }
 
                     // Store context before async gap
                     final navigator = Navigator.of(context);
-                    final scaffoldMessenger = ScaffoldMessenger.of(context);
 
                     // Show loading indicator
                     if (!mounted) return;
@@ -160,25 +157,15 @@ class _LoginScreenState extends State<LoginScreen> {
                               builder: (context) => const MainScreen()),
                         );
                       } else {
-                        scaffoldMessenger.showSnackBar(
-                          SnackBar(
-                            content: Text(result['message'] ??
-                                'Invalid email or password'),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
+                        showErrorToast(
+                            result['message'] ?? 'Invalid email or password');
                       }
                     } catch (e) {
                       // Close loading indicator
                       if (!mounted) return;
                       navigator.pop();
 
-                      scaffoldMessenger.showSnackBar(
-                        const SnackBar(
-                          content: Text('An error occurred. Please try again.'),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
+                      showErrorToast('An error occurred. Please try again.');
                     }
                   },
                 ),
@@ -202,7 +189,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () {},
                     ),
                     const SizedBox(height: 12),
-                    const GoogleSignInButton(),
+                    const GoogleAuthButton(
+                      buttonText: 'Sign in with Google',
+                    ),
                   ],
                 ),
                 const SizedBox(height: 24),
