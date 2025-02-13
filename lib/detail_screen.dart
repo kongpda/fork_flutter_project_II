@@ -28,7 +28,7 @@ class _DetailScreenState extends State<DetailScreen> {
             child: Container(
               padding: const EdgeInsets.only(right: 50),
               child: Column(children: [
-                Text(widget.post.title,
+                Text(widget.post.attributes.title,
                 style: TextStyle(color: Colors.white,fontSize: 18, fontWeight: FontWeight.bold)),
               ]),
             ),
@@ -68,7 +68,7 @@ class _DetailScreenState extends State<DetailScreen> {
               ),
             ],
           ),
-          subtitle: Text(widget.post.address, style: TextStyle(color: Colors.grey.shade400),),
+          subtitle: Text(widget.post.attributes.address, style: TextStyle(color: Colors.grey.shade400),),
           trailing: ElevatedButton(onPressed: (){}, 
             style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF455AF7),foregroundColor: Colors.white),
             child: Text("Join"))
@@ -79,7 +79,7 @@ class _DetailScreenState extends State<DetailScreen> {
           width: double.infinity,
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: NetworkImage(widget.post.featureImage),
+              image: NetworkImage(widget.post.attributes.featureImage),
               fit: BoxFit.cover,
             ),
           ),
@@ -99,7 +99,7 @@ class _DetailScreenState extends State<DetailScreen> {
             const Spacer(),
             Padding(
               padding: const EdgeInsets.all(20.0),
-              child: Text(DateFormat('dd MMM, yyyy').format(DateTime.parse(widget.post.startDate)), style: TextStyle(color: Color(0xFF455AF7), fontSize: 18),),
+              child: Text(DateFormat('dd MMM, yyyy').format(DateTime.parse(widget.post.attributes.startDate.toString())), style: TextStyle(color: Color(0xFF455AF7), fontSize: 18),),
             ),
           ],
         ),
@@ -123,7 +123,7 @@ class _DetailScreenState extends State<DetailScreen> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 TextSpan(
-                  text: widget.post.description,
+                  text: widget.post.attributes.description,
                 ),
                 
               ],
