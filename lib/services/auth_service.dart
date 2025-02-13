@@ -175,12 +175,12 @@ class AuthService {
       try {
         await _googleSignIn.disconnect();
       } catch (e) {
-        print('Disconnect error (ignorable): $e');
+        // Silently handle disconnect errors
       }
       try {
         await _googleSignIn.signOut();
       } catch (e) {
-        print('SignOut error (ignorable): $e');
+        // Silently handle signout errors
       }
 
       // Wait a brief moment to ensure cleanup is complete
@@ -189,7 +189,6 @@ class AuthService {
       // Attempt to sign in and catch specific errors
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
-        print('Google Sign In Error: User cancelled the sign-in flow');
         return {'success': false, 'message': 'Sign in aborted by user'};
       }
 
@@ -197,7 +196,6 @@ class AuthService {
         final GoogleSignInAuthentication googleAuth =
             await googleUser.authentication;
         if (googleAuth.accessToken == null) {
-          print('Google Sign In Error: No access token received');
           return {
             'success': false,
             'message': 'Failed to get Google authentication token'
@@ -221,9 +219,6 @@ class AuthService {
             'provider_user_id': googleUser.id,
           }),
         );
-
-        print('Google Auth API Response Status: ${response.statusCode}');
-        print('Google Auth API Response Body: ${response.body}');
 
         if (response.statusCode == 200) {
           return {'success': true, 'data': json.decode(response.body)};
