@@ -5,12 +5,15 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_project_ii/services/auth_service.dart';
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthProvider extends ChangeNotifier {
   bool _isAuthenticated = false;
   String? _token;
+  bool isFirstTime = true;
   final _storage = const FlutterSecureStorage();
   static const _tokenKey = 'auth_token';
+  static const _firstTimeKey = 'is_first_time';
 
   bool get isAuthenticated => _isAuthenticated;
   String? get token => _token;
@@ -19,6 +22,10 @@ class AuthProvider extends ChangeNotifier {
   Future<void> init() async {
     _token = await _storage.read(key: _tokenKey);
     _isAuthenticated = _token != null;
+
+    final prefs = await SharedPreferences.getInstance();
+    isFirstTime = prefs.getBool(_firstTimeKey) ?? true;
+
     notifyListeners();
   }
 
@@ -84,6 +91,13 @@ class AuthProvider extends ChangeNotifier {
     _token = token;
     await _storage.write(key: _tokenKey, value: token);
     _isAuthenticated = true;
+    notifyListeners();
+  }
+
+  Future<void> completeOnboarding() async {
+    isFirstTime = false;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_firstTimeKey, false);
     notifyListeners();
   }
 }

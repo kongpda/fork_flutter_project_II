@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:your_app/models/user_profile.dart';
+import 'package:flutter_project_ii/models/user_profile.dart';
 
 class ApiService {
   static Future<UserProfile> getUserProfile() async {

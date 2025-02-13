@@ -87,7 +87,7 @@ class _AllEventScreenState extends State<AllEventScreen> {
               
               ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
-                child: Image.network(slide.featureImage,
+                child: Image.network(slide.attributes.featureImage,
                 width: 100,
                 height: 100,
                 fit: BoxFit.cover,
@@ -99,9 +99,9 @@ class _AllEventScreenState extends State<AllEventScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(slide.startDate, style: TextStyle(fontSize: 14, color: Color(0xFF455AF7)),),
+                    Text(slide.attributes.startDate.toString(), style: TextStyle(fontSize: 14, color: Color(0xFF455AF7)),),
                     SizedBox(height: 10),
-                    Text(slide.title,maxLines: 2, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey.shade400),),
+                    Text(slide.attributes.title,maxLines: 2, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey.shade400),),
                   ],
                 ),
               ),

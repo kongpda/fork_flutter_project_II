@@ -133,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
               
               ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
-                child: Image.network(slide.featureImage,
+                child: Image.network(slide.attributes.featureImage,
                 width: 120,
                 height: 100,
                 fit: BoxFit.cover,
@@ -145,9 +145,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(slide.startDate, style: TextStyle(fontSize: 14, color: Color(0xFF455AF7)),),
+                    Text(slide.attributes.startDate.toString(), style: TextStyle(fontSize: 14, color: Color(0xFF455AF7)),),
                     SizedBox(height: 10),
-                    Text(slide.title,maxLines: 2, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey.shade400),),
+                    Text(slide.attributes.title,maxLines: 2, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey.shade400),),
                   ],
                 ),
               ),
@@ -198,7 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       topLeft: Radius.circular(20),
                       topRight: Radius.circular(20),
                     ),
-                    child: Image.network(items.featureImage,
+                    child: Image.network(items.attributes.featureImage,
                     fit: BoxFit.cover,
                     width: MediaQuery.sizeOf(context).width,
                     height: 150,
@@ -219,8 +219,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text((DateFormat('MMM dd, yyyy').format(DateTime.parse(items.startDate)).substring(0,3)), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black)),
-                        Text((DateFormat('MMM dd, yyyy').format(DateTime.parse(items.startDate)).substring(4,6)), style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.black)),
+                        Text((DateFormat('MMM dd, yyyy').format(DateTime.parse(items.attributes.startDate.toString())).substring(0,3)), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black)),
+                        Text((DateFormat('MMM dd, yyyy').format(DateTime.parse(items.attributes.startDate.toString())).substring(4,6)), style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.black)),
                       ],
                     ),
                     ),
@@ -239,7 +239,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text(
-                            items.title,
+                            items.attributes.title,
                             style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold, color: Colors.black),
                             ),
                             SizedBox(height: 5,),
@@ -247,7 +247,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: [
                                 Icon(Icons.location_on, color: Colors.grey[500], size: 20),
                                 SizedBox(width: 5),
-                                Text(items.address, style: TextStyle(fontSize: 16, color: Colors.grey[500]),
+                                Text(items.attributes.address, style: TextStyle(fontSize: 16, color: Colors.grey[500]),
                                 ),
                               ],
                             ),
