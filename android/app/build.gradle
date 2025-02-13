@@ -5,6 +5,13 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
+// TODO: Add this back in when we have a keystore
+ def keystoreProperties = new Properties()
+ def keystorePropertiesFile = rootProject.file('key.properties')
+ if (keystorePropertiesFile.exists()) {
+     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+ }
+
 android {
     namespace = "com.example.flutter_project_ii"
     compileSdk = flutter.compileSdkVersion
@@ -29,6 +36,15 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         minSdkVersion 21
+    }
+
+    signingConfigs {
+        debug {
+             keyAlias keystoreProperties['keyAlias']
+             keyPassword keystoreProperties['keyPassword']
+             storeFile file(keystoreProperties['storeFile'])
+             storePassword keystoreProperties['storePassword']
+        }
     }
 
     buildTypes {
