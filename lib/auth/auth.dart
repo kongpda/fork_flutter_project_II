@@ -48,7 +48,7 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> login(String email, String password) async {
+  Future<Map<String, dynamic>> login(String email, String password) async {
     try {
       final deviceName = await _getDeviceName();
       final result = await AuthService.login(email, password, deviceName);
@@ -58,22 +58,23 @@ class AuthProvider extends ChangeNotifier {
         await _storage.write(key: _tokenKey, value: _token);
         _isAuthenticated = true;
         notifyListeners();
-        return true;
       }
-      return false;
+      return result;
     } catch (e) {
-      print('Login error: $e');
-      return false;
+      return {'success': false, 'message': 'An unexpected error occurred'};
     }
   }
 
   Future<void> logout() async {
     try {
       if (_token != null) {
-        await AuthService.logout(_token!);
+        final result = await AuthService.logout(_token!);
+        if (!result) {
+          throw Exception('Logout failed');
+        }
       }
     } catch (e) {
-      print('Logout error: $e');
+      throw Exception('Failed to logout');
     } finally {
       _isAuthenticated = false;
       _token = null;
@@ -99,5 +100,54 @@ class AuthProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_firstTimeKey, false);
     notifyListeners();
+  }
+
+  Future<Map<String, dynamic>> signup(
+    String name,
+    String email,
+    String password,
+  ) async {
+    try {
+      final deviceName = await _getDeviceName();
+      final result = await AuthService.signup(
+        name,
+        email,
+        password,
+        deviceName,
+      );
+
+      if (result['success']) {
+        _token = result['data']['token'];
+        await _storage.write(key: _tokenKey, value: _token);
+        _isAuthenticated = true;
+        notifyListeners();
+      }
+      return result;
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Failed to create account. Please try again.',
+      };
+    }
+  }
+
+  Future<Map<String, dynamic>> signInWithGoogle() async {
+    try {
+      final deviceName = await _getDeviceName();
+      final result = await AuthService.signInWithGoogle(deviceName);
+
+      if (result['success']) {
+        _token = result['data']['token'];
+        await _storage.write(key: _tokenKey, value: _token);
+        _isAuthenticated = true;
+        notifyListeners();
+      }
+      return result;
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Failed to sign in with Google. Please try again.',
+      };
+    }
   }
 }

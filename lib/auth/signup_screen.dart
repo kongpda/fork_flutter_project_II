@@ -4,6 +4,8 @@ import '../widgets/custom_text_field.dart';
 import '../widgets/custom_button.dart';
 import '../services/auth_service.dart';
 import '../utils/device_utils.dart';
+import '../widgets/google_auth_button.dart';
+import '../widgets/error_message.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -41,16 +43,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
         }
       } else {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(result['message'] ?? 'Registration failed')),
-          );
+          showErrorToast(result['message'] ?? 'Registration failed');
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
+        showErrorToast('Error: $e');
       }
     } finally {
       if (mounted) {
@@ -157,11 +155,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       onPressed: () {},
                     ),
                     const SizedBox(height: 12),
-                    _socialSignUpButton(
-                      'Sign Up with Google',
-                      imageUrl:
-                          'https://img.icons8.com/?size=100&id=17949&format=png&color=000000',
-                      onPressed: () {},
+                    const GoogleAuthButton(
+                      buttonText: 'Sign up with Google',
                     ),
                   ],
                 ),
