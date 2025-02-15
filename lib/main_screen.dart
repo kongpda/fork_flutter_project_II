@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project_ii/api_module/event_provider.dart';
+import 'package:flutter_project_ii/event_app.dart';
 import 'package:flutter_project_ii/favorite_screen.dart';
 import 'package:flutter_project_ii/home_screen.dart';
 import 'package:flutter_project_ii/profile_module/profile_screen.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_project_ii/test_screen.dart';
 import 'package:flutter_project_ii/tickets/tickets_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -24,7 +27,7 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget _buildBody() {
     return IndexedStack(index: currentIndex, children: [
-      HomeScreen(),
+      EventApp(),
       FavoriteScreen(),
       TicketsScreen(),
       ProfileScreen(),
