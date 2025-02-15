@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Events Flutter</string>
+    <!-- Replace with your OAuth Client ID -->
+    <string name="server_client_id">459272499632-mrdv97goo4rgup2upevo1pte6f19o2qn.apps.googleusercontent.com</string>
+</resources>
