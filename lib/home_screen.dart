@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project_ii/api_module/event_logic.dart';
 import 'package:flutter_project_ii/api_module/event_model.dart';
-import 'package:flutter_project_ii/category_module/category_app.dart';
-import 'package:flutter_project_ii/detail_screen.dart';
 import 'package:flutter_project_ii/profile_module/language_data.dart';
 import 'package:flutter_project_ii/profile_module/language_logic.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_project_ii/detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   //const HomeScreen({super.key});
@@ -19,6 +18,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   Language _lang = Language();
   bool language = true;
+  
   @override
   Widget build(BuildContext context) {
     _lang = context.watch<LanguageLogic>().language;
@@ -91,9 +91,9 @@ class _HomeScreenState extends State<HomeScreen> {
               Expanded(child: 
               GestureDetector(
                 onTap: (){
-                  Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => CategoryApp(),)
-                  );
+                  // Navigator.push(context,
+                  //   MaterialPageRoute(builder: (context) => CategoryApp(),)
+                  // );
                 },
                 child: Text(_lang.more, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF455AF7)),),
               ),)
@@ -117,17 +117,18 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-
-
+//bool isFavorited = false;
   Widget _buildPopularEventItem(Event slide){
+    bool isFavorited = context.watch<EventLogic>().isFavorited;
     return _navigateToDetailScreen(
       slide,
       child: Card(
         color: Color(0xFF1A1D24),
         margin: EdgeInsets.only(bottom: 20,),
         child: Container(
-        padding: EdgeInsets.only(right: 20),
+        //padding: EdgeInsets.only(right: 20),
           child: Row(
+            //mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               
@@ -151,8 +152,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              Spacer(),
-              Icon(Icons.favorite_border_outlined, color: Colors.grey.shade700, size: 26,),
+              IconButton(onPressed: (){
+                context.read<EventLogic>().addFavorite(slide, context);
+                context.read<EventLogic>().read(context);
+                
+              }, 
+              icon: Icon(
+                slide.attributes.isFavorited 
+                  ? Icons.favorite 
+                  : Icons.favorite_border_outlined,
+                color: slide.attributes.isFavorited ? Colors.red : Colors.grey.shade700,
+                size: 26,)
+              ),
             ]
           ),
         ),
@@ -186,8 +197,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildSlideItem(Event items){
-    return  _navigateToDetailScreen(
-      items,
+    return  InkWell(
+      onTap: (){
+        Navigator.push(context,
+          MaterialPageRoute(builder: (context) => DetailScreen(items),)
+        );
+      },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -242,15 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             items.attributes.title,
                             style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold, color: Colors.black),
                             ),
-                            SizedBox(height: 5,),
-                            Row(
-                              children: [
-                                Icon(Icons.location_on, color: Colors.grey[500], size: 20),
-                                SizedBox(width: 5),
-                                Text(items.attributes.address, style: TextStyle(fontSize: 16, color: Colors.grey[500]),
-                                ),
-                              ],
-                            ),
+                            
                           ],
                         ),
                         Spacer(),
@@ -280,7 +287,8 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-  Widget _navigateToDetailScreen(Event items,{Widget? child}){
+
+  Widget _navigateToDetailScreen(Event items, {Widget? child}){
     return GestureDetector(
       onTap: (){
         Navigator.push(context,

@@ -40,6 +40,8 @@ dependencies:
   device_info_plus: ^11.3.0
   flutter_secure_storage: ^9.2.4
   shared_preferences: ^2.5.2
+  google_sign_in: ^6.2.2
+  fluttertoast: ^8.2.12
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -67,6 +69,7 @@ flutter:
     - assets/Wegocolor.png
     - assets/images/google-qr.png
     - assets/images/event-one.jpg
+    - assets/images/google_logo.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

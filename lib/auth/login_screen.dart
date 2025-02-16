@@ -9,6 +9,8 @@ import 'package:provider/provider.dart';
 import 'auth.dart';
 import '../utils/device_utils.dart';
 import '../services/auth_service.dart';
+import '../widgets/google_auth_button.dart';
+import '../widgets/error_message.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -115,14 +117,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     final password = _passwordController.text;
 
                     if (email.isEmpty || password.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Please fill in all fields')),
-                      );
+                      if (!mounted) return;
+                      showErrorToast('Please fill in all fields');
                       return;
                     }
 
+                    // Store context before async gap
+                    final navigator = Navigator.of(context);
+
                     // Show loading indicator
+                    if (!mounted) return;
                     showDialog(
                       context: context,
                       barrierDismissible: false,
@@ -137,42 +141,31 @@ class _LoginScreenState extends State<LoginScreen> {
                           await AuthService.login(email, password, deviceName);
 
                       // Close loading indicator
-                      if (mounted) Navigator.pop(context);
+                      if (!mounted) return;
+                      navigator.pop();
 
-                      if (result['success'] && mounted) {
+                      if (result['success']) {
+                        if (!mounted) return;
                         // Store token in your auth provider
                         final token = result['data']['token'];
                         final authProvider =
                             Provider.of<AuthProvider>(context, listen: false);
                         await authProvider.setToken(token);
 
-                        Navigator.pushReplacement(
-                          context,
+                        navigator.pushReplacement(
                           MaterialPageRoute(
                               builder: (context) => const MainScreen()),
                         );
-                      } else if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(result['message'] ??
-                                'Invalid email or password'),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
+                      } else {
+                        showErrorToast(
+                            result['message'] ?? 'Invalid email or password');
                       }
                     } catch (e) {
                       // Close loading indicator
-                      if (mounted) Navigator.pop(context);
+                      if (!mounted) return;
+                      navigator.pop();
 
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content:
-                                Text('An error occurred. Please try again.'),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      }
+                      showErrorToast('An error occurred. Please try again.');
                     }
                   },
                 ),
@@ -196,11 +189,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () {},
                     ),
                     const SizedBox(height: 12),
-                    _socialLoginButton(
-                      'Log In with Google',
-                      imageUrl:
-                          'https://img.icons8.com/?size=100&id=17949&format=png&color=000000',
-                      onPressed: () {},
+                    const GoogleAuthButton(
+                      buttonText: 'Sign in with Google',
                     ),
                   ],
                 ),

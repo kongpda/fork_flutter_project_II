@@ -1,18 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project_ii/api_module/detail_model.dart';
+import 'package:flutter_project_ii/api_module/event_logic.dart';
 import 'package:flutter_project_ii/api_module/event_model.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class DetailScreen extends StatefulWidget {
   //const DetailScreen({super.key});
-
-  Event post;
-  DetailScreen(this.post, {super.key});
+  final Event post;
+  const DetailScreen(this.post);
 
   @override
   State<DetailScreen> createState() => _DetailScreenState();
 }
 
 class _DetailScreenState extends State<DetailScreen> {
+  EventDetailModel? eventDetail;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadEventDetail();
+  }
+
+  Future<void> _loadEventDetail() async {
+    eventDetail = await context.read<EventLogic>().getEventDetail(context, widget.post.id);
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +43,7 @@ class _DetailScreenState extends State<DetailScreen> {
             child: Container(
               padding: const EdgeInsets.only(right: 50),
               child: Column(children: [
-                Text(widget.post.attributes.title,
+                Text(eventDetail?.data.attributes.title ?? widget.post.attributes.title,
                 style: TextStyle(color: Colors.white,fontSize: 18, fontWeight: FontWeight.bold)),
               ]),
             ),
@@ -58,8 +73,7 @@ class _DetailScreenState extends State<DetailScreen> {
           ),
           title: Row(
             children: [
-              Text(
-                'ery_blp',
+              Text(eventDetail?.data.relationships.user.attributes.name ?? '',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 14,
@@ -68,7 +82,8 @@ class _DetailScreenState extends State<DetailScreen> {
               ),
             ],
           ),
-          subtitle: Text(widget.post.attributes.address, style: TextStyle(color: Colors.grey.shade400),),
+          subtitle: Text(eventDetail?.data.attributes.address ?? '', 
+            style: TextStyle(color: Colors.grey.shade400),),
           trailing: ElevatedButton(onPressed: (){}, 
             style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF455AF7),foregroundColor: Colors.white),
             child: Text("Join"))
@@ -106,8 +121,7 @@ class _DetailScreenState extends State<DetailScreen> {
         // Likes
          Padding(
           padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            '24 like',
+          child: Text(eventDetail?.data.attributes.favoritesCount.toString() ?? '0',
             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white,),
           ),
         ),
@@ -123,7 +137,7 @@ class _DetailScreenState extends State<DetailScreen> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 TextSpan(
-                  text: widget.post.attributes.description,
+                  text: eventDetail?.data.attributes.description ?? '',
                 ),
                 
               ],

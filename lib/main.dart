@@ -25,7 +25,7 @@ void main() async {
         ),
         ChangeNotifierProvider(create: (create) => LanguageLogic()),
         ChangeNotifierProvider(create: (create) => CategoryLogic()),
-        ChangeNotifierProvider(create: (create) => EventLogic()),
+        ChangeNotifierProvider(create: (context) => EventLogic()),
       ],
       child: const MyApp(),
     ),
