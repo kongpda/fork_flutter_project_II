@@ -23,11 +23,16 @@ class EventLogic with ChangeNotifier {
   List<Data> _eventDetail = [];
   List<Data> get eventDetail => _eventDetail;
 
+  List<Event> _eventsByOrganizer = [];
+  List<Event> get eventsByOrganizer => _eventsByOrganizer;
+
   void setLoading(){
     _isLoading = true;
     notifyListeners();
   }
 List<Event> get favoritedEvents => _events.where((event) => event.attributes.isFavorited).toList();
+
+
 
 
   Future<void> addFavorite(Event event, BuildContext context) async {
@@ -115,6 +120,41 @@ List<Event> get favoritedEvents => _events.where((event) => event.attributes.isF
     } catch (e) {
       _error = e.toString();
       return null;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+  Future<void> readByOrganizer(BuildContext context) async {
+    _isLoading = true;
+    _error = '';
+    notifyListeners();
+    try {
+      final token = context.read<AuthProvider>().token;
+      final eventDetail = await getEventDetail(context, _events[0].id);
+      final organizerId = eventDetail?.data.relationships.organizer.id;
+      debugPrint('organizer: $organizerId');
+      final response = await http.get(
+        Uri.parse('https://events.iink.dev/api/events?organizer_id=$organizerId'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['data'] != null) {
+          _eventsByOrganizer = (data['data'] as List)
+              .map((event) => Event.fromJson(event))
+              .toList();
+        }
+        debugPrint('eventsByOrganizer: '+_eventsByOrganizer.length.toString());
+      } else {
+        _error = 'Failed to load events';
+      }
+    } catch (e) {
+      _error = e.toString();
     } finally {
       _isLoading = false;
       notifyListeners();

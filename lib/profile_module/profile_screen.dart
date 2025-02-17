@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_project_ii/api_module/event_logic.dart';
+import 'package:flutter_project_ii/api_module/event_model.dart';
 import 'package:flutter_project_ii/detail_screen.dart';
 import 'package:flutter_project_ii/profile_module/language_logic.dart';
 import 'package:flutter_project_ii/profile_module/information_screen.dart';
@@ -16,7 +18,8 @@ enum ChangeWidget {
 }
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+ // const ProfileScreen({super.key});
+ 
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -24,8 +27,11 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   ChangeWidget selectedWidget = ChangeWidget.grid;
+  List<Event> eventsByOrganizer = [];
   bool isSelected = false;
   final int _langIndex = 0;
+
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -494,11 +500,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildGridItem() {
+    List<Event> eventsByOrganizer = context.watch<EventLogic>().eventsByOrganizer;
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.4,
       child: GridView.builder(
         shrinkWrap: true,
-        itemCount: slideModelList.length,
+        itemCount: eventsByOrganizer.length,
         physics: ScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
@@ -506,19 +513,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
           mainAxisSpacing: 2,
         ),
         itemBuilder: (context, index) {
-          return _buildPostItem(slideModelList[index]);
+          return _buildPostItem(eventsByOrganizer[index]);
         },
       ),
     );
   }
 
-  Widget _buildPostItem(SlideModel post) {
+  Widget _buildPostItem(Event post) {
     return _navigateToDetailScreen(
       post,
       child: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: NetworkImage(post.img),
+            image: NetworkImage(post.attributes.featureImage),
             fit: BoxFit.cover,
           ),
         ),
@@ -526,7 +533,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _navigateToDetailScreen(SlideModel post, {Widget? child}) {
+  Widget _navigateToDetailScreen(Event post, {Widget? child}) {
     return InkWell(
       onTap: () {
         // Navigator.of(context).push(
