@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project_ii/add_event_screen.dart';
 import 'package:flutter_project_ii/api_module/event_provider.dart';
 import 'package:flutter_project_ii/event_app.dart';
 import 'package:flutter_project_ii/favorite_screen.dart';
@@ -30,6 +31,7 @@ class _MainScreenState extends State<MainScreen> {
     return IndexedStack(index: currentIndex, children: [
       EventApp(),
       FavoriteScreen(),
+      AddEventScreen(),
       TicketsScreen(),
       ProfileApp(),
     ]);
@@ -70,6 +72,19 @@ class _MainScreenState extends State<MainScreen> {
           ),
           selectedIcon: Icon(
             Icons.favorite,
+            size: 35,
+            color: Colors.grey.shade400,
+          ),
+          label: '',
+        ),
+        NavigationDestination(
+          icon: Icon(
+            Icons.add_box_outlined,
+            size: 35,
+            color: Colors.grey.shade400,
+          ),
+          selectedIcon: Icon(
+            Icons.add_box,
             size: 35,
             color: Colors.grey.shade400,
           ),

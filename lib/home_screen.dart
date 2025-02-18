@@ -126,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
         color: Color(0xFF1A1D24),
         margin: EdgeInsets.only(bottom: 20,),
         child: Container(
-        //padding: EdgeInsets.only(right: 20),
+        padding: EdgeInsets.all(10),
           child: Row(
             //mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -244,7 +244,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SizedBox(height: 10),
               Container(
-              padding: const EdgeInsets.only(left: 20, right: 20),
+                //width: 380,
+                padding: const EdgeInsets.only(left: 20, right: 20),
                 child: Column(
                   children: [
                     Row(
@@ -253,9 +254,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text(
-                            items.attributes.title,
-                            style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold, color: Colors.black),
+                            SizedBox(
+                              width: 350,
+                              child: Text(
+                              items.attributes.title,
+                              style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold, color: Colors.black),
+                              ),
                             ),
                             
                           ],

@@ -15,146 +15,140 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
-  EventDetailModel? eventDetail;
 
-  @override
   void initState() {
     super.initState();
-    _loadEventDetail();
-  }
+    // Fetch event data when screen initializes
+    Future.microtask(() => 
+      context.read<EventLogic>().getEventDetail(context,widget.post.id)
 
-  Future<void> _loadEventDetail() async {
-    eventDetail = await context.read<EventLogic>().getEventDetail(context, widget.post.id);
-    setState(() {});
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF1A202C),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Center(
-        child: Column(children: [
-          Positioned(
-            child: Container(
-              padding: const EdgeInsets.only(right: 50),
-              child: Column(children: [
-                Text(eventDetail?.data.attributes.title ?? widget.post.attributes.title,
-                style: TextStyle(color: Colors.white,fontSize: 18, fontWeight: FontWeight.bold)),
-              ]),
-            ),
-          )
-        ]),
-      )),
-      body: _buildPost(),
-      
-    
-    );
-  }
-
-  Widget _buildPost() {
-    return Container(
-      color: Color(0xFF1A202C),
-      child: _buildPostItem(),
-    );
-  }
-
-  Widget _buildPostItem(){
-    return Column( 
-       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-         ListTile(
-          leading: CircleAvatar(
-            backgroundImage: NetworkImage('https://images.pexels.com/photos/30238700/pexels-photo-30238700/free-photo-of-woman-enjoying-a-latte-in-a-cozy-cafe.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
+        title: Text('Event Detail'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.more_vert),
+            onPressed: () {},
           ),
-          title: Row(
+        ],
+      ),
+      body: Consumer<EventLogic>(
+        builder: (context, provider, child) {
+          if (provider.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          
+          if (provider.error != '') {
+            return Center(child: Text('Error: ${provider.error}'));
+          }
+          
+          if (provider.eventDetail == null) {
+            return const Center(child: Text('No event found'));
+          }
+      return SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(eventDetail?.data.relationships.user.attributes.name ?? '',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                  color: Colors.white
+              Image.network(provider.eventDetail?.featureImage ?? ''),
+              Text(
+                '9:41',
+                style: TextStyle(fontSize: 14, color: Colors.grey),
+              ),
+              SizedBox(height: 16),
+              Text(
+                '2000s Hip Hop Night',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Text(
+                '29 Oct - 07:00 PM',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Brooklyn',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+              SizedBox(height: 16),
+              Row(
+                children: [
+                  CircleAvatar(
+                    backgroundImage: NetworkImage(provider.eventDetail?.featureImage ?? ''), // Add an image asset
+                  ),
+                  SizedBox(width: 8),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Adam Levine',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        'Organizer',
+                        style: TextStyle(fontSize: 14, color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                  Spacer(),
+                  TextButton(
+                    onPressed: () {},
+                    child: Text(
+                      'Follow',
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 16),
+              Text(
+                'Morbidincidunt pulvinarfames aliquam etiam quis volutpat id purus. Dul nec eu tortorinterdum ultricies viverrafeuqiat tristique a...',
+                style: TextStyle(fontSize: 14, color: Colors.grey),
+              ),
+              SizedBox(height: 16),
+              Row(
+                children: [
+                  Text(
+                    'SE100%',
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  ),
+                  SizedBox(width: 8),
+                  Text(
+                    'SE140h SE',
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  ),
+                ],
+              ),
+              SizedBox(height: 16),
+              Text(
+                'Robinswood',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 16),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {},
+                  child: Text(
+                    'Buy Ticket \$90',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                  ),
                 ),
               ),
             ],
           ),
-          subtitle: Text(eventDetail?.data.attributes.address ?? '', 
-            style: TextStyle(color: Colors.grey.shade400),),
-          trailing: ElevatedButton(onPressed: (){}, 
-            style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF455AF7),foregroundColor: Colors.white),
-            child: Text("Join"))
         ),
-        // Post image
-        Container(
-          height: 400,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: NetworkImage(widget.post.attributes.featureImage),
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        // Post actions
-        Row(
-          children: [
-            IconButton(
-              icon: const Icon(Icons.favorite_border, color: Colors.white,),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: const Icon(Icons.comment_outlined, color: Colors.white,),
-              onPressed: () {},
-            ),
-
-            const Spacer(),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Text(DateFormat('dd MMM, yyyy').format(DateTime.parse(widget.post.attributes.startDate.toString())), style: TextStyle(color: Color(0xFF455AF7), fontSize: 18),),
-            ),
-          ],
-        ),
-        // Likes
-         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Text(eventDetail?.data.attributes.favoritesCount.toString() ?? '0',
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white,),
-          ),
-        ),
-        // Caption
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: RichText(
-            text: TextSpan(
-              style: TextStyle(),
-              children: [
-                TextSpan(
-                  text: 'ery_blp ',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                TextSpan(
-                  text: eventDetail?.data.attributes.description ?? '',
-                ),
-                
-              ],
-            ),
-          ),
-        ),
-        // Time
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            '4 days ago',
-            style: TextStyle(
-              fontSize: 12, color: Colors.white,
-            ),
-          ),
-        ),
-      ],
+      );
+        }
+      )
     );
   }
 }

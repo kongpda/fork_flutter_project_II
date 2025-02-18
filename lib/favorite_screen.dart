@@ -65,7 +65,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         color: Color(0xFF1A1D24),
         margin: EdgeInsets.only(bottom: 20,),
         child: Container(
-        //padding: EdgeInsets.only(right: 20),
+        padding: EdgeInsets.all(10),
           child: Row(
             //mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,

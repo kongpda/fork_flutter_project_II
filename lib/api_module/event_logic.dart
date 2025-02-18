@@ -20,8 +20,8 @@ class EventLogic with ChangeNotifier {
   bool _isFavorited = false;
   bool get isFavorited => _isFavorited;
 
-  List<Data> _eventDetail = [];
-  List<Data> get eventDetail => _eventDetail;
+  EventDetail? _eventDetail;
+  EventDetail? get eventDetail => _eventDetail;
 
   List<Event> _eventsByOrganizer = [];
   List<Event> get eventsByOrganizer => _eventsByOrganizer;
@@ -95,7 +95,7 @@ List<Event> get favoritedEvents => _events.where((event) => event.attributes.isF
       notifyListeners();
     }
   }
-  Future<EventDetailModel?> getEventDetail(BuildContext context, String eventId) async {
+  Future<void> getEventDetail(BuildContext context,String eventId) async {
     _isLoading = true;
     _error = '';
     notifyListeners();
@@ -112,14 +112,13 @@ List<Event> get favoritedEvents => _events.where((event) => event.attributes.isF
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        return EventDetailModel.fromJson(data);
+        _eventDetail = EventDetail.fromJson(data['data']);
+        //debugPrint('eventDetail: '+_eventDetail.toString());
       } else {
-        _error = 'Failed to load event details';
-        return null;
+        _error = 'Failed to load event detail';
       }
     } catch (e) {
       _error = e.toString();
-      return null;
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -131,11 +130,8 @@ List<Event> get favoritedEvents => _events.where((event) => event.attributes.isF
     notifyListeners();
     try {
       final token = context.read<AuthProvider>().token;
-      final eventDetail = await getEventDetail(context, _events[0].id);
-      final organizerId = eventDetail?.data.relationships.organizer.id;
-      debugPrint('organizer: $organizerId');
       final response = await http.get(
-        Uri.parse('https://events.iink.dev/api/events?organizer_id=$organizerId'),
+        Uri.parse('https://events.iink.dev/api/user/events'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
