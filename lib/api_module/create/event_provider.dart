@@ -2,33 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_project_ii/auth/auth.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter_project_ii/api_module/create/event_model.dart';
 import 'package:provider/provider.dart';
 
 class EventProvider with ChangeNotifier {
-  final String _baseUrl = 'https://events.iink.dev/api/events'; // Replace with your API URL
 
   Future<bool> createEvent(BuildContext context,Event event) async {
+    debugPrint('event: '+event.imageUrl.toString());
     try {
-      // First, upload the image if it exists
-      String? imageUrl;
-      if (event.imageFile != null) {
-        imageUrl = await _uploadImage(event.imageFile!);
-      }
-
-      // Create the event with the image URL
       final token = context.read<AuthProvider>().token;
+      debugPrint('token: '+token.toString());
       final response = await http.post(
-        Uri.parse('$_baseUrl/events'),
+        Uri.parse('https://events.iink.dev/api/events'),
         headers: {
-          'Content-Type': 'application/json',
-          // Add any authentication headers if needed
+          'Accept': 'application/json',
           'Authorization': 'Bearer $token',
+          'Content-Type': 'multipart/form-data',
         },
         body: json.encode({
           ...event.toJson(),
-          'imageUrl': imageUrl,
         }),
       );
 
@@ -44,33 +36,5 @@ class EventProvider with ChangeNotifier {
     }
   }
 
-  Future<String> _uploadImage(File imageFile) async {
-    try {
-      var request = http.MultipartRequest(
-        'POST',
-        Uri.parse('$_baseUrl/upload'),
-      );
-
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'image',
-          imageFile.path,
-        ),
-      );
-
-      var response = await request.send();
-      var responseData = await response.stream.toBytes();
-      var responseString = String.fromCharCodes(responseData);
-      
-      if (response.statusCode == 200) {
-        var data = json.decode(responseString);
-        return data['imageUrl'];
-      } else {
-        throw Exception('Failed to upload image');
-      }
-    } catch (e) {
-      print('Error uploading image: $e');
-      rethrow;
-    }
-  }
+  
 }

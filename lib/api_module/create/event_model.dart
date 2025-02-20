@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Event {
   final String name;
@@ -11,7 +13,7 @@ class Event {
   final String participantsType;
   final String eventType;
   final String status;
-  final File? imageFile;
+  final String? imageUrl;
 
   Event({
     required this.name,
@@ -24,7 +26,7 @@ class Event {
     required this.participantsType,
     required this.eventType,
     required this.status,
-    this.imageFile,
+    this.imageUrl,
   });
 
   Map<String, dynamic> toJson() {
@@ -39,6 +41,7 @@ class Event {
       'participantsType': participantsType,
       'eventType': eventType,
       'status': status,
+      'imageUrl': imageUrl,
     };
   }
 }

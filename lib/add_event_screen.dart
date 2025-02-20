@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project_ii/api_module/create/event_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_project_ii/api_module/create/event_model.dart';
-import 'package:flutter_project_ii/api_module/create/event_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import 'dart:io';
 
@@ -39,6 +41,33 @@ class _AddEventScreenState extends State<AddEventScreen> {
   String? _eventType;
   String? _status;
 
+  Future<String?> _uploadImageToCloudinary(File imageFile) async {
+    try {
+      // Replace these with your actual Cloudinary credentials
+      final cloudName = 'dchutnzwv';
+      final uploadPreset = 'flutter';
+      
+      final url = Uri.parse('https://api.cloudinary.com/v1_1/$cloudName/image/upload');
+      
+      // Create multipart request
+      final request = http.MultipartRequest('POST', url)
+        ..fields['upload_preset'] = uploadPreset
+        ..files.add(await http.MultipartFile.fromPath('file', imageFile.path));
+
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      if (response.statusCode != 200) {
+        throw Exception('Failed to upload image: ${response.body}');
+      }
+
+      final jsonData = jsonDecode(response.body);
+      return jsonData['secure_url'];
+    } catch (e) {
+      print('Error uploading image: $e');
+      return null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -262,6 +291,27 @@ class _AddEventScreenState extends State<AddEventScreen> {
                 child: ElevatedButton(
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
+                      // Show loading indicator
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return const Center(child: CircularProgressIndicator());
+                        },
+                      );
+
+                      String? imageUrl;
+                      if (_imageFile != null) {
+                        imageUrl = await _uploadImageToCloudinary(_imageFile!);
+                        if (imageUrl == null) {
+                          Navigator.pop(context); // Dismiss loading indicator
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Failed to upload image')),
+                          );
+                          return;
+                        }
+                      }
+
                       final event = Event(
                         name: _nameCtrl.text,
                         description: _descCtrl.text,
@@ -273,11 +323,13 @@ class _AddEventScreenState extends State<AddEventScreen> {
                         participantsType: _participantsType ?? '',
                         eventType: _eventType ?? '',
                         status: _status ?? '',
-                        imageFile: _imageFile,
+                        imageUrl: imageUrl, // Update the Event model to accept imageUrl instead of imageFile
                       );
 
                       final success = await Provider.of<EventProvider>(context, listen: false)
-                          .createEvent(context,event);
+                          .createEvent(context, event);
+
+                      Navigator.pop(context); // Dismiss loading indicator
 
                       if (success) {
                         ScaffoldMessenger.of(context).showSnackBar(

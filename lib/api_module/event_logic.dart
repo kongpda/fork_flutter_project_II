@@ -69,7 +69,7 @@ List<Event> get favoritedEvents => _events.where((event) => event.attributes.isF
 
     try {
       final token = context.read<AuthProvider>().token;
-      debugPrint('token: '+token.toString());
+      //debugPrint('token: '+token.toString());
       final response = await http.get(
         Uri.parse('https://events.iink.dev/api/events'),
         headers: {
@@ -100,8 +100,8 @@ List<Event> get favoritedEvents => _events.where((event) => event.attributes.isF
     _error = '';
     notifyListeners();
 
-    try {
       final token = context.read<AuthProvider>().token;
+    try {
       final response = await http.get(
         Uri.parse('https://events.iink.dev/api/events/$eventId'),
         headers: {
@@ -112,18 +112,25 @@ List<Event> get favoritedEvents => _events.where((event) => event.attributes.isF
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        _eventDetail = EventDetail.fromJson(data['data']);
-        //debugPrint('eventDetail: '+_eventDetail.toString());
+        debugPrint('data: '+data['data'].toString());
+        if (data['data'] != null) {
+          _eventDetail = EventDetail.fromJson(data['data']['attributes']);
+          //_eventDetail = EventDetail.fromJson(data['data']);
+        }
+        else{
+          _error = 'Failed to load event data';
+        }
       } else {
-        _error = 'Failed to load event detail';
+        _error = 'Failed to load event data';
       }
     } catch (e) {
-      _error = e.toString();
+      _error = 'Error fetching event data: $e';
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
+
   Future<void> readByOrganizer(BuildContext context) async {
     _isLoading = true;
     _error = '';
@@ -145,7 +152,6 @@ List<Event> get favoritedEvents => _events.where((event) => event.attributes.isF
               .map((event) => Event.fromJson(event))
               .toList();
         }
-        debugPrint('eventsByOrganizer: '+_eventsByOrganizer.length.toString());
       } else {
         _error = 'Failed to load events';
       }
