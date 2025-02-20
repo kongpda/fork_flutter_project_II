@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project_ii/api_module/event_logic.dart';
 import 'package:flutter_project_ii/api_module/event_model.dart';
+import 'package:flutter_project_ii/detail_screen.dart';
 import 'package:provider/provider.dart';
 
 class FavoriteScreen extends StatefulWidget {
@@ -65,7 +66,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         color: Color(0xFF1A1D24),
         margin: EdgeInsets.only(bottom: 20,),
         child: Container(
-        padding: EdgeInsets.all(10),
+        //padding: EdgeInsets.all(10),
           child: Row(
             //mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -112,9 +113,9 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   Widget _navigateToDetailScreen(Event items,{Widget? child}){
     return GestureDetector(
       onTap: (){
-        // Navigator.push(context,
-        //   MaterialPageRoute(builder: (context) => DetailScreen(items),)
-        // );
+        Navigator.push(context,
+          MaterialPageRoute(builder: (context) => DetailScreen(items),)
+        );
       },
       child: child,
     );

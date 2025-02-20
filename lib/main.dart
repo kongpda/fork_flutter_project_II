@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project_ii/api_module/create/event_provider.dart';
 import 'package:flutter_project_ii/api_module/event_logic.dart';
 import 'package:flutter_project_ii/auth/auth.dart';
 import 'package:flutter_project_ii/auth/login_screen.dart';
@@ -26,6 +27,7 @@ void main() async {
         ChangeNotifierProvider(create: (create) => LanguageLogic()),
         ChangeNotifierProvider(create: (create) => CategoryLogic()),
         ChangeNotifierProvider(create: (context) => EventLogic()),
+        ChangeNotifierProvider(create: (context) => EventProvider()),
       ],
       child: const MyApp(),
     ),
