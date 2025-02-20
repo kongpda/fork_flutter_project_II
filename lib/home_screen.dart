@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project_ii/all_event_module/all_event_screen.dart';
 import 'package:flutter_project_ii/api_module/event_logic.dart';
 import 'package:flutter_project_ii/api_module/event_model.dart';
 import 'package:flutter_project_ii/profile_module/language_data.dart';
@@ -91,9 +92,9 @@ class _HomeScreenState extends State<HomeScreen> {
               Expanded(child: 
               GestureDetector(
                 onTap: (){
-                  // Navigator.push(context,
-                  //   MaterialPageRoute(builder: (context) => CategoryApp(),)
-                  // );
+                  Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AllEventScreen(),)
+                  );
                 },
                 child: Text(_lang.more, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF455AF7)),),
               ),)
@@ -126,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
         color: Color(0xFF1A1D24),
         margin: EdgeInsets.only(bottom: 20,),
         child: Container(
-        padding: EdgeInsets.all(10),
+        //padding: EdgeInsets.all(10),
           child: Row(
             //mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
