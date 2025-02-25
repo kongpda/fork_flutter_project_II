@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project_ii/api_module/event_logic.dart';
 import 'package:flutter_project_ii/api_module/event_model.dart';
-import 'package:flutter_project_ii/detail_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_project_ii/widgets/event_card.dart';
 
 class FavoriteScreen extends StatefulWidget {
   const FavoriteScreen({super.key});
@@ -52,13 +52,21 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                 height: 20,
               ),
               Expanded(
-                child: ListView.builder(
-                  physics: BouncingScrollPhysics(),
-                  itemCount: favoritedEvents.length,
-                  itemBuilder: (context, index) {
-                    return _buildPopularEventItem(favoritedEvents[index]);
-                  },
-                ),
+                child: favoritedEvents.isEmpty
+                    ? Center(
+                        child: Text(
+                          'No favorite events yet',
+                          style: TextStyle(
+                              color: Colors.grey.shade400, fontSize: 16),
+                        ),
+                      )
+                    : ListView.builder(
+                        physics: BouncingScrollPhysics(),
+                        itemCount: favoritedEvents.length,
+                        itemBuilder: (context, index) {
+                          return _buildEventCard(favoritedEvents[index]);
+                        },
+                      ),
               )
             ],
           ),
@@ -67,83 +75,19 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     );
   }
 
-  Widget _buildPopularEventItem(Event slide) {
-    bool isFavorited = context.watch<EventLogic>().isFavorited;
-    return _navigateToDetailScreen(
-      slide,
-      child: Card(
-        color: Color(0xFF1A1D24),
-        margin: EdgeInsets.only(
-          bottom: 20,
-        ),
-        child: Container(
-          //padding: EdgeInsets.all(10),
-          child: Row(
-              //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                  child: Image.network(
-                    slide.attributes.featureImage,
-                    width: 120,
-                    height: 100,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                SizedBox(width: 20),
-                SizedBox(
-                  width: 200,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        slide.attributes.startDate.toString(),
-                        style:
-                            TextStyle(fontSize: 14, color: Color(0xFF455AF7)),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        slide.attributes.title,
-                        maxLines: 2,
-                        style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey.shade400),
-                      ),
-                    ],
-                  ),
-                ),
-                IconButton(
-                    onPressed: () {
-                      context.read<EventLogic>().addFavorite(slide, context);
-                      context.read<EventLogic>().read(context);
-                    },
-                    icon: Icon(
-                      slide.attributes.isFavorited
-                          ? Icons.favorite
-                          : Icons.favorite_border_outlined,
-                      color: slide.attributes.isFavorited
-                          ? Colors.red
-                          : Colors.grey.shade700,
-                      size: 26,
-                    )),
-              ]),
-        ),
-      ),
-    );
-  }
-
-  Widget _navigateToDetailScreen(Event items, {Widget? child}) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => DetailScreen(items),
-            ));
+  Widget _buildEventCard(Event event) {
+    return EventCard(
+      date: event.attributes.startDate.toString(),
+      title: event.attributes.title,
+      imageUrl: event.attributes.featureImage,
+      eventId: event.id,
+      isFavorited: event.attributes.isFavorited,
+      favoritesCount: event.attributes.favoritesCount ?? 0,
+      toggleFavoriteUrl: event.links.toggleFavorite,
+      onFavoriteToggled: () {
+        // Refresh the favorites list
+        context.read<EventLogic>().read(context);
       },
-      child: child,
     );
   }
 }
