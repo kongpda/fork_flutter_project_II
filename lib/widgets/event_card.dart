@@ -153,26 +153,39 @@ class _EventCardState extends State<EventCard> {
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
         decoration: BoxDecoration(
-          color: const Color(0xFF2C2C2E),
+          color:
+              const Color(0xFF242A38), // Slightly lighter than app background
           borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withAlpha(51), // 0.2 * 255 = ~51
+              spreadRadius: 1,
+              blurRadius: 3,
+              offset: const Offset(0, 2),
+            ),
+          ],
+          border: Border.all(
+            color: const Color(0xFF2D3748),
+            width: 1,
+          ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
-              // Event Image
+              // Event Image - Set to 90x90
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: widget.imageUrl.startsWith('http')
                     ? Image.network(
                         widget.imageUrl,
-                        width: 64,
-                        height: 64,
+                        width: 90,
+                        height: 90,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
-                            width: 64,
-                            height: 64,
+                            width: 90,
+                            height: 90,
                             color: Colors.grey[800],
                             child: const Icon(Icons.image_not_supported,
                                 color: Colors.white54),
@@ -181,8 +194,8 @@ class _EventCardState extends State<EventCard> {
                       )
                     : Image.asset(
                         widget.imageUrl,
-                        width: 64,
-                        height: 64,
+                        width: 90,
+                        height: 90,
                         fit: BoxFit.cover,
                       ),
               ),
