@@ -68,7 +68,7 @@ class Attributes {
     final String title;
     final String featureImage;
     final DateTime startDate;
-    final DateTime endDate;
+    final DateTime? endDate;
     final int favoritesCount;
     final bool isFavorited;
 
@@ -94,7 +94,7 @@ class Attributes {
         "title": title,
         "feature_image": featureImage,
         "start_date": startDate.toIso8601String(),
-        "end_date": endDate.toIso8601String(),
+        "end_date": endDate?.toIso8601String(),
         "favorites_count": favoritesCount,
         "is_favorited": isFavorited,
     };

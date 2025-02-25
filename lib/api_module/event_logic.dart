@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_project_ii/api_module/detail_model.dart';
 import 'package:flutter_project_ii/api_module/event_model.dart';
@@ -60,16 +59,13 @@ List<Event> get favoritedEvents => _events.where((event) => event.attributes.isF
       notifyListeners();
     }
   }
-
-  Future<void> read(BuildContext context) async {
-    
+Future<void> read(BuildContext context) async {
     _isLoading = true;
     _error = '';
     notifyListeners();
-
     try {
       final token = context.read<AuthProvider>().token;
-      //debugPrint('token: '+token.toString());
+      debugPrint('token: '+token.toString());
       final response = await http.get(
         Uri.parse('https://events.iink.dev/api/events'),
         headers: {
@@ -82,8 +78,10 @@ List<Event> get favoritedEvents => _events.where((event) => event.attributes.isF
         final data = json.decode(response.body);
         if (data['data'] != null) {
           _events = (data['data'] as List)
-              .map((event) => Event.fromJson(event))
+              .map((json) => Event.fromJson(json))
               .toList();
+        } else {
+          _error = 'No event data found';
         }
       } else {
         _error = 'Failed to load events';
@@ -95,6 +93,7 @@ List<Event> get favoritedEvents => _events.where((event) => event.attributes.isF
       notifyListeners();
     }
   }
+  
   Future<void> getEventDetail(BuildContext context,String eventId) async {
     _isLoading = true;
     _error = '';
@@ -114,8 +113,8 @@ List<Event> get favoritedEvents => _events.where((event) => event.attributes.isF
         final data = json.decode(response.body);
         debugPrint('data: '+data['data'].toString());
         if (data['data'] != null) {
-          _eventDetail = EventDetail.fromJson(data['data']['attributes']);
-          //_eventDetail = EventDetail.fromJson(data['data']);
+          _eventDetail = EventDetail.fromJson(data['data']);
+          debugPrint('eventDetail: '+_eventDetail.toString());
         }
         else{
           _error = 'Failed to load event data';
