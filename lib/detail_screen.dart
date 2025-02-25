@@ -39,6 +39,7 @@ class _DetailScreenState extends State<DetailScreen> {
       ),
       body: Consumer<EventLogic>(
         builder: (context, provider, child) {
+          final eventDetail = context.watch<EventLogic>().eventDetail;
           if (provider.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -47,7 +48,7 @@ class _DetailScreenState extends State<DetailScreen> {
             return Center(child: Text('Error: ${provider.error}'));
           }
           
-          if (provider.eventDetail == null) {
+          if (provider.eventDetail == '') {
             return const Center(child: Text('No event found'));
           }
       return SingleChildScrollView(
@@ -56,14 +57,14 @@ class _DetailScreenState extends State<DetailScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.network(provider.eventDetail?.featureImage ?? ''),
+              Image.network(eventDetail?.data?.attributes?.featureImage ?? ''),
               Text(
                 '9:41',
                 style: TextStyle(fontSize: 14, color: Colors.grey),
               ),
               SizedBox(height: 16),
               Text(
-                '2000s Hip Hop Night',
+                provider.eventDetail?.data?.attributes?.title ?? '',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 8),
@@ -80,7 +81,7 @@ class _DetailScreenState extends State<DetailScreen> {
               Row(
                 children: [
                   CircleAvatar(
-                    backgroundImage: NetworkImage(provider.eventDetail?.featureImage ?? ''), // Add an image asset
+                    backgroundImage: NetworkImage(provider.eventDetail?.data?.attributes?.featureImage ?? ''), // Add an image asset
                   ),
                   SizedBox(width: 8),
                   Column(
