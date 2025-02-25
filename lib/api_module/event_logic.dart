@@ -111,10 +111,9 @@ Future<void> read(BuildContext context) async {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        debugPrint('data: '+data['data'].toString());
-        if (data['data'] != null) {
-          _eventDetail = EventDetail.fromJson(data['data']);
-          debugPrint('eventDetail: '+_eventDetail.toString());
+        if (data != null) {
+          _eventDetail = eventDetailFromJson(response.body);
+          notifyListeners();
         }
         else{
           _error = 'Failed to load event data';

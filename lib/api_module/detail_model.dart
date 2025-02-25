@@ -2,6 +2,7 @@
 //
 //     final eventDetail = eventDetailFromJson(jsonString);
 
+import 'package:meta/meta.dart';
 import 'dart:convert';
 
 EventDetail eventDetailFromJson(String str) => EventDetail.fromJson(json.decode(str));
@@ -9,95 +10,95 @@ EventDetail eventDetailFromJson(String str) => EventDetail.fromJson(json.decode(
 String eventDetailToJson(EventDetail data) => json.encode(data.toJson());
 
 class EventDetail {
-    Data? data;
+    final Data data;
 
     EventDetail({
-        this.data,
+        required this.data,
     });
 
     factory EventDetail.fromJson(Map<String, dynamic> json) => EventDetail(
-        data: json["data"] == null ? null : Data.fromJson(json["data"]),
+        data: Data.fromJson(json["data"]),
     );
 
     Map<String, dynamic> toJson() => {
-        "data": data?.toJson(),
+        "data": data.toJson(),
     };
 }
 
 class Data {
-    String? type;
-    String? id;
-    DataAttributes? attributes;
-    Relationships? relationships;
-    DataLinks? links;
+    final String type;
+    final String id;
+    final DataAttributes attributes;
+    final Relationships relationships;
+    final DataLinks links;
 
     Data({
-        this.type,
-        this.id,
-        this.attributes,
-        this.relationships,
-        this.links,
+        required this.type,
+        required this.id,
+        required this.attributes,
+        required this.relationships,
+        required this.links,
     });
 
     factory Data.fromJson(Map<String, dynamic> json) => Data(
         type: json["type"],
         id: json["id"],
-        attributes: json["attributes"] == null ? null : DataAttributes.fromJson(json["attributes"]),
-        relationships: json["relationships"] == null ? null : Relationships.fromJson(json["relationships"]),
-        links: json["links"] == null ? null : DataLinks.fromJson(json["links"]),
+        attributes: DataAttributes.fromJson(json["attributes"]),
+        relationships: Relationships.fromJson(json["relationships"]),
+        links: DataLinks.fromJson(json["links"]),
     );
 
     Map<String, dynamic> toJson() => {
         "type": type,
         "id": id,
-        "attributes": attributes?.toJson(),
-        "relationships": relationships?.toJson(),
-        "links": links?.toJson(),
+        "attributes": attributes.toJson(),
+        "relationships": relationships.toJson(),
+        "links": links.toJson(),
     };
 }
 
 class DataAttributes {
-    String? title;
-    String? featureImage;
-    DateTime? startDate;
-    DateTime? endDate;
-    String? slug;
-    String? description;
-    String? location;
-    String? participationType;
-    String? registrationStatus;
-    String? eventType;
-    String? status;
-    DateTime? createdAt;
-    DateTime? updatedAt;
-    int? favoritesCount;
-    bool? isFavorited;
-    bool? isFeatured;
+    final String title;
+    final String featureImage;
+    final DateTime startDate;
+    final DateTime endDate;
+    final String slug;
+    final String description;
+    final String location;
+    final String participationType;
+    final String registrationStatus;
+    final String eventType;
+    final String status;
+    final DateTime createdAt;
+    final DateTime updatedAt;
+    final int favoritesCount;
+    final bool isFavorited;
+    final bool isFeatured;
 
     DataAttributes({
-        this.title,
-        this.featureImage,
-        this.startDate,
-        this.endDate,
-        this.slug,
-        this.description,
-        this.location,
-        this.participationType,
-        this.registrationStatus,
-        this.eventType,
-        this.status,
-        this.createdAt,
-        this.updatedAt,
-        this.favoritesCount,
-        this.isFavorited,
-        this.isFeatured,
+        required this.title,
+        required this.featureImage,
+        required this.startDate,
+        required this.endDate,
+        required this.slug,
+        required this.description,
+        required this.location,
+        required this.participationType,
+        required this.registrationStatus,
+        required this.eventType,
+        required this.status,
+        required this.createdAt,
+        required this.updatedAt,
+        required this.favoritesCount,
+        required this.isFavorited,
+        required this.isFeatured,
     });
 
     factory DataAttributes.fromJson(Map<String, dynamic> json) => DataAttributes(
         title: json["title"],
         featureImage: json["feature_image"],
-        startDate: json["start_date"] == null ? null : DateTime.parse(json["start_date"]),
-        endDate: json["end_date"] == null ? null : DateTime.parse(json["end_date"]),
+        startDate: DateTime.parse(json["start_date"]),
+        endDate: DateTime.parse(json["end_date"]),
         slug: json["slug"],
         description: json["description"],
         location: json["location"],
@@ -105,8 +106,8 @@ class DataAttributes {
         registrationStatus: json["registration_status"],
         eventType: json["event_type"],
         status: json["status"],
-        createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
-        updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
         favoritesCount: json["favorites_count"],
         isFavorited: json["is_favorited"],
         isFeatured: json["is_featured"],
@@ -115,8 +116,8 @@ class DataAttributes {
     Map<String, dynamic> toJson() => {
         "title": title,
         "feature_image": featureImage,
-        "start_date": startDate?.toIso8601String(),
-        "end_date": endDate?.toIso8601String(),
+        "start_date": startDate.toIso8601String(),
+        "end_date": endDate.toIso8601String(),
         "slug": slug,
         "description": description,
         "location": location,
@@ -124,8 +125,8 @@ class DataAttributes {
         "registration_status": registrationStatus,
         "event_type": eventType,
         "status": status,
-        "created_at": createdAt?.toIso8601String(),
-        "updated_at": updatedAt?.toIso8601String(),
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
         "favorites_count": favoritesCount,
         "is_favorited": isFavorited,
         "is_featured": isFeatured,
@@ -133,12 +134,12 @@ class DataAttributes {
 }
 
 class DataLinks {
-    String? self;
-    String? toggleFavorite;
+    final String self;
+    final String toggleFavorite;
 
     DataLinks({
-        this.self,
-        this.toggleFavorite,
+        required this.self,
+        required this.toggleFavorite,
     });
 
     factory DataLinks.fromJson(Map<String, dynamic> json) => DataLinks(
@@ -153,72 +154,68 @@ class DataLinks {
 }
 
 class Relationships {
-    Category? category;
-    User? user;
-    Organizer? organizer;
-    List<dynamic>? tags;
+    final Category category;
+    final User user;
+    final Organizer organizer;
 
     Relationships({
-        this.category,
-        this.user,
-        this.organizer,
-        this.tags,
+        required this.category,
+        required this.user,
+        required this.organizer,
     });
 
     factory Relationships.fromJson(Map<String, dynamic> json) => Relationships(
-        category: json["category"] == null ? null : Category.fromJson(json["category"]),
-        user: json["user"] == null ? null : User.fromJson(json["user"]),
-        organizer: json["organizer"] == null ? null : Organizer.fromJson(json["organizer"]),
-        tags: json["tags"] == null ? [] : List<dynamic>.from(json["tags"]!.map((x) => x)),
+        category: Category.fromJson(json["category"]),
+        user: User.fromJson(json["user"]),
+        organizer: Organizer.fromJson(json["organizer"]),
     );
 
     Map<String, dynamic> toJson() => {
-        "category": category?.toJson(),
-        "user": user?.toJson(),
-        "organizer": organizer?.toJson(),
-        "tags": tags == null ? [] : List<dynamic>.from(tags!.map((x) => x)),
+        "category": category.toJson(),
+        "user": user.toJson(),
+        "organizer": organizer.toJson(),
     };
 }
 
 class Category {
-    String? type;
-    int? id;
-    CategoryAttributes? attributes;
-    List<dynamic>? relationships;
-    CategoryLinks? links;
+    final String type;
+    final int id;
+    final CategoryAttributes attributes;
+    final List<dynamic> relationships;
+    final CategoryLinks links;
 
     Category({
-        this.type,
-        this.id,
-        this.attributes,
-        this.relationships,
-        this.links,
+        required this.type,
+        required this.id,
+        required this.attributes,
+        required this.relationships,
+        required this.links,
     });
 
     factory Category.fromJson(Map<String, dynamic> json) => Category(
         type: json["type"],
         id: json["id"],
-        attributes: json["attributes"] == null ? null : CategoryAttributes.fromJson(json["attributes"]),
-        relationships: json["relationships"] == null ? [] : List<dynamic>.from(json["relationships"]!.map((x) => x)),
-        links: json["links"] == null ? null : CategoryLinks.fromJson(json["links"]),
+        attributes: CategoryAttributes.fromJson(json["attributes"]),
+        relationships: List<dynamic>.from(json["relationships"].map((x) => x)),
+        links: CategoryLinks.fromJson(json["links"]),
     );
 
     Map<String, dynamic> toJson() => {
         "type": type,
         "id": id,
-        "attributes": attributes?.toJson(),
-        "relationships": relationships == null ? [] : List<dynamic>.from(relationships!.map((x) => x)),
-        "links": links?.toJson(),
+        "attributes": attributes.toJson(),
+        "relationships": List<dynamic>.from(relationships.map((x) => x)),
+        "links": links.toJson(),
     };
 }
 
 class CategoryAttributes {
-    String? name;
-    String? slug;
+    final String name;
+    final String slug;
 
     CategoryAttributes({
-        this.name,
-        this.slug,
+        required this.name,
+        required this.slug,
     });
 
     factory CategoryAttributes.fromJson(Map<String, dynamic> json) => CategoryAttributes(
@@ -233,10 +230,10 @@ class CategoryAttributes {
 }
 
 class CategoryLinks {
-    String? self;
+    final String self;
 
     CategoryLinks({
-        this.self,
+        required this.self,
     });
 
     factory CategoryLinks.fromJson(Map<String, dynamic> json) => CategoryLinks(
@@ -249,48 +246,44 @@ class CategoryLinks {
 }
 
 class Organizer {
-    String? type;
-    String? id;
-    OrganizerAttributes? attributes;
-    List<dynamic>? relationships;
-    OrganizerLinks? links;
+    final String type;
+    final String id;
+    final OrganizerAttributes attributes;
+    final OrganizerLinks links;
 
     Organizer({
-        this.type,
-        this.id,
-        this.attributes,
-        this.relationships,
-        this.links,
+        required this.type,
+        required this.id,
+        required this.attributes,
+        required this.links,
     });
 
     factory Organizer.fromJson(Map<String, dynamic> json) => Organizer(
         type: json["type"],
         id: json["id"],
-        attributes: json["attributes"] == null ? null : OrganizerAttributes.fromJson(json["attributes"]),
-        relationships: json["relationships"] == null ? [] : List<dynamic>.from(json["relationships"]!.map((x) => x)),
-        links: json["links"] == null ? null : OrganizerLinks.fromJson(json["links"]),
+        attributes: OrganizerAttributes.fromJson(json["attributes"]),
+        links: OrganizerLinks.fromJson(json["links"]),
     );
 
     Map<String, dynamic> toJson() => {
         "type": type,
         "id": id,
-        "attributes": attributes?.toJson(),
-        "relationships": relationships == null ? [] : List<dynamic>.from(relationships!.map((x) => x)),
-        "links": links?.toJson(),
+        "attributes": attributes.toJson(),
+        "links": links.toJson(),
     };
 }
 
 class OrganizerAttributes {
-    String? name;
-    String? slug;
-    String? email;
-    String? phone;
+    final String name;
+    final String slug;
+    final String email;
+    final String phone;
 
     OrganizerAttributes({
-        this.name,
-        this.slug,
-        this.email,
-        this.phone,
+        required this.name,
+        required this.slug,
+        required this.email,
+        required this.phone,
     });
 
     factory OrganizerAttributes.fromJson(Map<String, dynamic> json) => OrganizerAttributes(
@@ -309,12 +302,12 @@ class OrganizerAttributes {
 }
 
 class OrganizerLinks {
-    String? self;
-    String? events;
+    final String self;
+    final String events;
 
     OrganizerLinks({
-        this.self,
-        this.events,
+        required this.self,
+        required this.events,
     });
 
     factory OrganizerLinks.fromJson(Map<String, dynamic> json) => OrganizerLinks(
@@ -329,42 +322,42 @@ class OrganizerLinks {
 }
 
 class User {
-    String? id;
-    String? name;
-    String? email;
-    Profile? profile;
+    final String id;
+    final String name;
+    final String email;
+    final Profile profile;
 
     User({
-        this.id,
-        this.name,
-        this.email,
-        this.profile,
+        required this.id,
+        required this.name,
+        required this.email,
+        required this.profile,
     });
 
     factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["id"],
         name: json["name"],
         email: json["email"],
-        profile: json["profile"] == null ? null : Profile.fromJson(json["profile"]),
+        profile: Profile.fromJson(json["profile"]),
     );
 
     Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
         "email": email,
-        "profile": profile?.toJson(),
+        "profile": profile.toJson(),
     };
 }
 
 class Profile {
-    String? firstName;
-    String? lastName;
-    String? avatar;
+    final String firstName;
+    final String lastName;
+    final String avatar;
 
     Profile({
-        this.firstName,
-        this.lastName,
-        this.avatar,
+        required this.firstName,
+        required this.lastName,
+        required this.avatar,
     });
 
     factory Profile.fromJson(Map<String, dynamic> json) => Profile(
