@@ -153,8 +153,21 @@ class _EventCardState extends State<EventCard> {
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
         decoration: BoxDecoration(
-          color: const Color(0xFF2C2C2E),
+          color:
+              const Color(0xFF242A38), // Slightly lighter than app background
           borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withAlpha(51), // 0.2 * 255 = ~51
+              spreadRadius: 1,
+              blurRadius: 3,
+              offset: const Offset(0, 2),
+            ),
+          ],
+          border: Border.all(
+            color: const Color(0xFF2D3748),
+            width: 1,
+          ),
         ),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
