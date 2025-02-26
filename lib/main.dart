@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project_ii/api_module/create/category_logic.dart';
 import 'package:flutter_project_ii/api_module/create/event_provider.dart';
 import 'package:flutter_project_ii/api_module/event_logic.dart';
 import 'package:flutter_project_ii/auth/auth.dart';
 import 'package:flutter_project_ii/auth/login_screen.dart';
 import 'package:flutter_project_ii/auth/screens/forgot_password_screen.dart';
 import 'package:flutter_project_ii/auth/signup_screen.dart';
-import 'package:flutter_project_ii/category_module/category_service.dart';
 import 'package:flutter_project_ii/main_screen.dart';
 import 'package:flutter_project_ii/profile_module/language_logic.dart';
 import 'package:flutter_project_ii/profile_module/profile_screen.dart';
@@ -25,9 +25,9 @@ void main() async {
           value: authProvider,
         ),
         ChangeNotifierProvider(create: (create) => LanguageLogic()),
-        ChangeNotifierProvider(create: (create) => CategoryLogic()),
         ChangeNotifierProvider(create: (context) => EventLogic()),
         ChangeNotifierProvider(create: (context) => EventProvider()),
+        ChangeNotifierProvider(create: (context) => CategoryLogic()),
       ],
       child: const MyApp(),
     ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project_ii/api_module/create/category_logic.dart';
 import 'package:flutter_project_ii/api_module/create/event_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_project_ii/api_module/create/event_model.dart';
@@ -39,7 +40,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
 
   String? _participantsType;
   String? _eventType;
-  String? _status;
+  String? _categoryType;
 
   Future<String?> _uploadImageToCloudinary(File imageFile) async {
     try {
@@ -68,6 +69,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
       return null;
     }
   }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -192,16 +194,23 @@ class _AddEventScreenState extends State<AddEventScreen> {
               Row(
                 children: [
                   Expanded(
-                    child: TextFormField(
-                      controller: _catCtrl,
-                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    child: DropdownButtonFormField(
+                      //style: TextStyle(fontSize: 16, color: Colors.white),
+                      value: _categoryType,
                       decoration: const InputDecoration(
                         labelText: 'Category',
                         border: OutlineInputBorder(),
                       ),
-                      textInputAction: TextInputAction.send,
-                      keyboardType: TextInputType.text,
-                      autocorrect: false,
+                      items: const [
+
+                        DropdownMenuItem(value: '1', child: Text('Paid', style: TextStyle(fontSize: 16,))),
+                        DropdownMenuItem(value: '2', child: Text('Free', style: TextStyle(fontSize: 16,))),
+                      ],
+                      onChanged: (String? value) {
+                        setState(() {
+                          _categoryType = value;
+                        });
+                      },
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -236,7 +245,6 @@ class _AddEventScreenState extends State<AddEventScreen> {
                     decoration: const InputDecoration(
                       labelText: 'Capacity',
                       border: OutlineInputBorder(),
-                      prefixText: 'Person',
                     ),
                     textInputAction: TextInputAction.send,
                     keyboardType: TextInputType.number,
@@ -263,26 +271,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
                       },
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: DropdownButtonFormField(
-                      value: _status,
-                      decoration: const InputDecoration(
-                        labelText: 'Status',
-                        border: OutlineInputBorder(),
-                      ),
-                      items: const [
-                        DropdownMenuItem(value: 'open', child: Text('Open')),
-                        DropdownMenuItem(value: 'closed', child: Text('Closed')),
-                        DropdownMenuItem(value: 'full', child: Text('Full')),
-                      ],
-                      onChanged: (String? value) {
-                        setState(() {
-                          _status = value;
-                        });
-                      },
-                    ),
-                  ),
+                  
                 ],
               ),
               const SizedBox(height: 32),
@@ -322,7 +311,6 @@ class _AddEventScreenState extends State<AddEventScreen> {
                         capacity: _capCtrl.text,
                         participantsType: _participantsType ?? '',
                         eventType: _eventType ?? '',
-                        status: _status ?? '',
                         imageUrl: imageUrl, // Update the Event model to accept imageUrl instead of imageFile
                       );
 

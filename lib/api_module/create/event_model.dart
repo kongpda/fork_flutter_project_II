@@ -12,7 +12,6 @@ class Event {
   final String capacity;
   final String participantsType;
   final String eventType;
-  final String status;
   final String? imageUrl;
 
   Event({
@@ -25,7 +24,6 @@ class Event {
     required this.capacity,
     required this.participantsType,
     required this.eventType,
-    required this.status,
     this.imageUrl,
   });
 
@@ -40,7 +38,6 @@ class Event {
       'capacity': capacity,
       'participantsType': participantsType,
       'eventType': eventType,
-      'status': status,
       'imageUrl': imageUrl,
     };
   }

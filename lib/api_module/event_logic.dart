@@ -65,7 +65,6 @@ Future<void> read(BuildContext context) async {
     notifyListeners();
     try {
       final token = context.read<AuthProvider>().token;
-      debugPrint('token: '+token.toString());
       final response = await http.get(
         Uri.parse('https://events.iink.dev/api/events'),
         headers: {
@@ -160,4 +159,5 @@ Future<void> read(BuildContext context) async {
       notifyListeners();
     }
   }
+  
 }
