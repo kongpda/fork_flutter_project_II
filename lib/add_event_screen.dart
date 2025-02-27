@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project_ii/api_module/create/category_logic.dart';
 import 'package:flutter_project_ii/api_module/create/event_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_project_ii/api_module/create/event_model.dart';
@@ -35,13 +34,11 @@ class _AddEventScreenState extends State<AddEventScreen> {
   final _startCtrl = TextEditingController();
   final _endCtrl = TextEditingController();
   final _locCtrl = TextEditingController();
-  final _catCtrl = TextEditingController();
-  final _capCtrl = TextEditingController();
 
   String? _participantsType;
   String? _eventType;
   String? _categoryType;
-
+  String? _regStatus;
   Future<String?> _uploadImageToCloudinary(File imageFile) async {
     try {
       // Replace these with your actual Cloudinary credentials
@@ -122,9 +119,15 @@ class _AddEventScreenState extends State<AddEventScreen> {
               const SizedBox(height: 20),
               TextFormField(
                 controller: _nameCtrl,
+                validator: (String? text){
+                  if(text!.isEmpty){
+                    return "Title cannot be empty";
+                  }
+                  return null;
+                },
                 style: TextStyle(fontSize: 16, color: Colors.white),
                 decoration: InputDecoration(
-                  labelText: 'Event Name',
+                  labelText: 'Event Title',
                   border: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey[900]!),
                   ),
@@ -136,6 +139,12 @@ class _AddEventScreenState extends State<AddEventScreen> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _descCtrl,
+                validator: (String? text){
+                  if(text!.isEmpty){
+                    return "Description cannot be empty";
+                  }
+                  return null;
+                },
                 style: TextStyle(fontSize: 16, color: Colors.white),
                 decoration: const InputDecoration(
                   labelText: 'Description',
@@ -149,6 +158,12 @@ class _AddEventScreenState extends State<AddEventScreen> {
                   Expanded(
                     child: TextFormField(
                       controller: _startCtrl,
+                      validator: (String? text){
+                        if(text!.isEmpty){
+                          return "Start date cannot be empty";
+                        }
+                        return null;
+                      },
                       style: TextStyle(fontSize: 16, color: Colors.white),
                       decoration: const InputDecoration(
                         labelText: 'Start date',
@@ -164,6 +179,13 @@ class _AddEventScreenState extends State<AddEventScreen> {
                   Expanded(
                     child: TextFormField(
                       controller: _endCtrl,
+                      validator: (String? text) {
+                        if (text == null || text.isEmpty) {
+                          _endCtrl.text = _startCtrl.text;
+                          return null;
+                        }
+                        return null;
+                      },
                       style: TextStyle(fontSize: 16, color: Colors.white),
                       decoration: const InputDecoration(
                         labelText: 'End date',
@@ -180,6 +202,12 @@ class _AddEventScreenState extends State<AddEventScreen> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _locCtrl,
+                validator: (String? text){
+                  if(text!.isEmpty){
+                    return "Please enter location";
+                  }
+                  return null;
+                },
                 style: TextStyle(fontSize: 16, color: Colors.white),
                 decoration: const InputDecoration(
                   labelText: 'Location',
@@ -195,7 +223,8 @@ class _AddEventScreenState extends State<AddEventScreen> {
                 children: [
                   Expanded(
                     child: DropdownButtonFormField(
-                      //style: TextStyle(fontSize: 16, color: Colors.white),
+                      dropdownColor: Colors.grey[800],
+                      style: TextStyle(fontSize: 16, color: Colors.white),
                       value: _categoryType,
                       decoration: const InputDecoration(
                         labelText: 'Category',
@@ -203,12 +232,25 @@ class _AddEventScreenState extends State<AddEventScreen> {
                       ),
                       items: const [
 
-                        DropdownMenuItem(value: '1', child: Text('Paid', style: TextStyle(fontSize: 16,))),
-                        DropdownMenuItem(value: '2', child: Text('Free', style: TextStyle(fontSize: 16,))),
+                        DropdownMenuItem(value: '1', child: Text('Arts & Culture', style: TextStyle(fontSize: 16,))),
+                        DropdownMenuItem(value: '2', child: Text('Business & Finance', style: TextStyle(fontSize: 16,))),
+                        DropdownMenuItem(value: '3', child: Text('Community', style: TextStyle(fontSize: 16,))),
+                        DropdownMenuItem(value: '4', child: Text('Education', style: TextStyle(fontSize: 16,))),
+                        DropdownMenuItem(value: '5', child: Text('Entertainment', style: TextStyle(fontSize: 16,))),
+                        DropdownMenuItem(value: '6', child: Text('Food & Drink', style: TextStyle(fontSize: 16,))),
+                        DropdownMenuItem(value: '7', child: Text('Health & Wellness', style: TextStyle(fontSize: 16,))),
+                        DropdownMenuItem(value: '8', child: Text('Sports & Recreation', style: TextStyle(fontSize: 16,))),
+                        DropdownMenuItem(value: '9', child: Text('Technology', style: TextStyle(fontSize: 16,))),
+                        DropdownMenuItem(value: '10', child: Text('Travel & Adventure', style: TextStyle(fontSize: 16,))),
                       ],
+                      
                       onChanged: (String? value) {
                         setState(() {
-                          _categoryType = value;
+                          if (value == null) {
+                            _categoryType = '1';
+                          } else {
+                            _categoryType = value;
+                          }
                         });
                       },
                     ),
@@ -216,6 +258,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
                   const SizedBox(width: 10),
                   Expanded(
                     child: DropdownButtonFormField(
+                      dropdownColor: Colors.grey[800],
                       style: TextStyle(fontSize: 16, color: Colors.white),
                       value: _participantsType,
                       decoration: const InputDecoration(
@@ -224,12 +267,16 @@ class _AddEventScreenState extends State<AddEventScreen> {
                       ),
                       items: const [
 
-                        DropdownMenuItem(value: 'paid', child: Text('Paid', style: TextStyle(fontSize: 16, color: Colors.black))),
-                        DropdownMenuItem(value: 'free', child: Text('Free', style: TextStyle(fontSize: 16, color: Colors.black))),
+                        DropdownMenuItem(value: 'paid', child: Text('Paid', style: TextStyle(fontSize: 16,))),
+                        DropdownMenuItem(value: 'free', child: Text('Free', style: TextStyle(fontSize: 16,))),
                       ],
                       onChanged: (String? value) {
                         setState(() {
-                          _participantsType = value;
+                          if (value == null) {
+                            _participantsType = 'free';
+                          } else {
+                            _participantsType = value;
+                          }
                         });
                       },
                     ),
@@ -239,20 +286,35 @@ class _AddEventScreenState extends State<AddEventScreen> {
               const SizedBox(height: 16),
               Row(
                 children: [
-                  Expanded(child: TextFormField(
-                    controller: _capCtrl,
-                    style: TextStyle(fontSize: 16, color: Colors.white),
-                    decoration: const InputDecoration(
-                      labelText: 'Capacity',
-                      border: OutlineInputBorder(),
+                  Expanded(
+                    child: DropdownButtonFormField(
+                      dropdownColor: Colors.grey[800],
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                      value: _regStatus,
+                      decoration: const InputDecoration(
+                        labelText: 'Registration Status',
+                        border: OutlineInputBorder(),
+                      ),
+                      items: const [
+                        DropdownMenuItem(value: 'open', child: Text('Open', style: TextStyle(fontSize: 16,))),
+                        DropdownMenuItem(value: 'close', child: Text('Close', style: TextStyle(fontSize: 16,))),
+                        DropdownMenuItem(value: 'full', child: Text('Full', style: TextStyle(fontSize: 16,))),
+                      ],
+                      onChanged: (String? value) {
+                        setState(() {
+                          if (value == null) {
+                            _regStatus = 'open';
+                          } else {
+                            _regStatus = value;
+                          }
+                        });
+                      },
                     ),
-                    textInputAction: TextInputAction.send,
-                    keyboardType: TextInputType.number,
-                    autocorrect: false,
-                    )),
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: DropdownButtonFormField(
+                      dropdownColor: Colors.grey[800],
                       style: TextStyle(fontSize: 16, color: Colors.white),
                       value: _eventType,
                       decoration: const InputDecoration(
@@ -260,13 +322,17 @@ class _AddEventScreenState extends State<AddEventScreen> {
                         border: OutlineInputBorder(),
                       ),
                       items: const [
-                        DropdownMenuItem(value: 'online', child: Text('online', style: TextStyle(fontSize: 16, color: Colors.black))),
-                        DropdownMenuItem(value: 'in_person', child: Text('in_person', style: TextStyle(fontSize: 16, color: Colors.black))),
-                        DropdownMenuItem(value: 'hybrid', child: Text('hybrid', style: TextStyle(fontSize: 16, color: Colors.black))),
+                        DropdownMenuItem(value: 'online', child: Text('online', style: TextStyle(fontSize: 16,))),
+                        DropdownMenuItem(value: 'in_person', child: Text('in_person', style: TextStyle(fontSize: 16,))),
+                        DropdownMenuItem(value: 'hybrid', child: Text('hybrid', style: TextStyle(fontSize: 16,))),
                       ],
                       onChanged: (String? value) {
                         setState(() {
-                          _eventType = value;
+                          if (value == null) {
+                            _eventType = 'online';
+                          } else {
+                            _eventType = value;
+                          }
                         });
                       },
                     ),
@@ -301,16 +367,16 @@ class _AddEventScreenState extends State<AddEventScreen> {
                         }
                       }
 
-                      final event = Event(
+                      final event = Events(
                         name: _nameCtrl.text,
                         description: _descCtrl.text,
                         startDate: _startCtrl.text,
                         endDate: _endCtrl.text,
                         location: _locCtrl.text,
-                        category: _catCtrl.text,
-                        capacity: _capCtrl.text,
-                        participantsType: _participantsType ?? '',
-                        eventType: _eventType ?? '',
+                        category: _categoryType ?? '1',
+                        participantsType: _participantsType ?? 'free',
+                        regStatus: _regStatus ?? 'open',
+                        eventType: _eventType ?? 'online',
                         imageUrl: imageUrl, // Update the Event model to accept imageUrl instead of imageFile
                       );
 
@@ -323,7 +389,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Event created successfully!')),
                         );
-                        Navigator.pop(context);
+                        Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false); // Navigate to home and clear stack
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Failed to create event')),

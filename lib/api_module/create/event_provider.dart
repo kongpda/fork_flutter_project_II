@@ -7,17 +7,16 @@ import 'package:provider/provider.dart';
 
 class EventProvider with ChangeNotifier {
 
-  Future<bool> createEvent(BuildContext context,Event event) async {
-    debugPrint('event: '+event.imageUrl.toString());
+  Future<bool> createEvent(BuildContext context,Events event) async {
+    print(event.toJson());
     try {
       final token = context.read<AuthProvider>().token;
-      debugPrint('token: '+token.toString());
+      print(token);
       final response = await http.post(
         Uri.parse('https://events.iink.dev/api/events'),
         headers: {
-          'Accept': 'application/json',
+          'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
-          'Content-Type': 'multipart/form-data',
         },
         body: json.encode({
           ...event.toJson(),

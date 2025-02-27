@@ -159,5 +159,36 @@ Future<void> read(BuildContext context) async {
       notifyListeners();
     }
   }
+  Future<void> deleteEvent(BuildContext context, String eventId) async {
+    _isLoading = true;
+    _error = '';
+    notifyListeners();
+
+    try {
+      final token = context.read<AuthProvider>().token;
+      debugPrint('Deleting event with ID: $eventId');
+      final response = await http.delete(
+        Uri.parse('https://events.iink.dev/api/events/$eventId'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+      debugPrint('Response: ${response.statusCode}');
+      if (response.statusCode == 204) {
+        // Remove the deleted event from local lists
+        _events.removeWhere((event) => event.id == eventId);
+        _eventsByOrganizer.removeWhere((event) => event.id == eventId);
+        notifyListeners();
+      } else {
+        _error = 'Failed to delete event';
+      }
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
   
 }
