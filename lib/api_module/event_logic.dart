@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project_ii/api_module/detail_model.dart';
 import 'package:flutter_project_ii/api_module/event_model.dart';
+import 'package:flutter_project_ii/api_module/event_participant_model.dart';
 import 'package:flutter_project_ii/auth/auth.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -190,5 +191,6 @@ Future<void> read(BuildContext context) async {
       notifyListeners();
     }
   }
+  
   
 }

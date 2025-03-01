@@ -4,6 +4,7 @@ import 'dart:convert';
 
 class Events {
   final String name;
+  final String slug;
   final String description;
   final String startDate;
   final String endDate;
@@ -16,6 +17,7 @@ class Events {
 
   Events({
     required this.name,
+    required this.slug,
     required this.description,
     required this.startDate,
     required this.endDate,
@@ -30,6 +32,7 @@ class Events {
   Map<String, dynamic> toJson() {
     return {
       'title': name,
+      'slug': slug,
       'description': description,
       'start_date': startDate,
       'end_date': endDate,

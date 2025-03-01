@@ -369,6 +369,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
 
                       final event = Events(
                         name: _nameCtrl.text,
+                        slug: "",
                         description: _descCtrl.text,
                         startDate: _startCtrl.text,
                         endDate: _endCtrl.text,

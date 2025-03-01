@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project_ii/api_module/create/event_provider.dart';
 import 'package:flutter_project_ii/api_module/event_logic.dart';
 import 'package:flutter_project_ii/api_module/event_model.dart';
+import 'package:flutter_project_ii/api_module/event_participant_model.dart';
 import 'package:flutter_project_ii/edit_screen.dart';
 import 'package:flutter_project_ii/profile_module/profile_app.dart';
-import 'package:flutter_project_ii/qr_screen.dart';
 import 'package:provider/provider.dart';
 
 class DetailScreen extends StatefulWidget {
@@ -92,11 +93,12 @@ class _DetailScreenState extends State<DetailScreen> {
                           onPressed: () async {
                             await context.read<EventLogic>().deleteEvent(context, widget.post.id);
                             if (mounted) {
-                              Navigator.of(context).pop(); // Close dialog
+                              Navigator.of(context); // Close dialog
                               Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => ProfileApp()),
-                              ); // Navigate to profile screenឆ
+                              context,
+                              MaterialPageRoute(builder: (context) => ProfileApp()
+                              ),
+                            ); // Navigate to profile screenឆ
                             }
                           },
                         ),
@@ -191,24 +193,59 @@ class _DetailScreenState extends State<DetailScreen> {
                 SizedBox(height: 30),
                 Center(
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: ()async {
+
                       final eventId = provider.eventDetail?.data.id;
-                      if (eventId != null) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => QRCodeScreen(eventId: eventId),
-                          ),
+                      print('Event ID:'+eventId.toString());
+                        showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return const Center(child: CircularProgressIndicator());
+                        },
+                      );
+                        final joinEvent = EventParticipant(
+                          eventId: provider.eventDetail?.data.id ?? '',
+                          userId: provider.eventDetail?.data.relationships.user.id ?? '',
+                          status: "registered",
+                          participationType: eventDetail?.data.attributes.participationType ?? '',
+                          ticketTypeId: "2",
+                          checkInTime: DateTime.now(),
+                          joinedAt: DateTime.now(),
+
+                        );
+                        final success = await Provider.of<EventProvider>(context, listen: false)
+                          .joinEvent(context, joinEvent);
+
+                      Navigator.pop(context); // Dismiss loading indicator
+
+                      if (success) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Join Event successfully!')),
+                          
+                        );
+                        
+                        Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false); // Navigate to home and clear stack
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Failed to Join event')),
                         );
                       }
-                    },
-                    child: Text(
-                      'Join Event',
-                      style: TextStyle(fontSize: 18, color: Colors.white),
-                    ),
+                        //context.read<EventLogic>()
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => QRCodeScreen(eventId: eventId),
+                        //   ),
+                        // );
+                      },
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                       backgroundColor: Colors.blue,
+                    ),
+                    child: Text(
+                      'Join Event',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
                   ),
                 ),

@@ -8,6 +8,7 @@ import 'package:flutter_project_ii/auth/screens/forgot_password_screen.dart';
 import 'package:flutter_project_ii/auth/signup_screen.dart';
 import 'package:flutter_project_ii/main_screen.dart';
 import 'package:flutter_project_ii/profile_module/language_logic.dart';
+import 'package:flutter_project_ii/profile_module/profile_app.dart';
 import 'package:flutter_project_ii/profile_module/profile_screen.dart';
 import 'package:flutter_project_ii/start_screen.dart';
 import 'package:provider/provider.dart';
@@ -44,14 +45,14 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: const Color(0xFF1A1B1E),
       ),
-      routes: {
-        '/home': (context) => const MainScreen(),
-        '/signup': (context) => const SignUpScreen(),
-        '/forgot-password': (context) => const ForgotPasswordScreen(),
-        '/login': (context) => const LoginScreen(),
-        '/profile': (context) => ProfileScreen(),
-        '/start': (context) => const GetStartScreen(),
-      },
+      // routes: {
+      //   '/home': (context) => const MainScreen(),
+      //   '/signup': (context) => const SignUpScreen(),
+      //   '/forgot-password': (context) => const ForgotPasswordScreen(),
+      //   '/login': (context) => const LoginScreen(),
+      //   '/profile': (context) => ProfileApp(),
+      //   '/start': (context) => const GetStartScreen(),
+      // },
       home: Consumer<AuthProvider>(
         builder: (context, authProvider, child) {
           if (authProvider.isFirstTime) {
