@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project_ii/api_module/detail_model.dart';
 import 'package:flutter_project_ii/api_module/event_model.dart';
+import 'package:flutter_project_ii/api_module/event_participant_model.dart';
 import 'package:flutter_project_ii/auth/auth.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -65,7 +66,6 @@ Future<void> read(BuildContext context) async {
     notifyListeners();
     try {
       final token = context.read<AuthProvider>().token;
-      debugPrint('token: '+token.toString());
       final response = await http.get(
         Uri.parse('https://events.iink.dev/api/events'),
         headers: {
@@ -160,4 +160,37 @@ Future<void> read(BuildContext context) async {
       notifyListeners();
     }
   }
+  Future<void> deleteEvent(BuildContext context, String eventId) async {
+    _isLoading = true;
+    _error = '';
+    notifyListeners();
+
+    try {
+      final token = context.read<AuthProvider>().token;
+      debugPrint('Deleting event with ID: $eventId');
+      final response = await http.delete(
+        Uri.parse('https://events.iink.dev/api/events/$eventId'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+      debugPrint('Response: ${response.statusCode}');
+      if (response.statusCode == 204) {
+        // Remove the deleted event from local lists
+        _events.removeWhere((event) => event.id == eventId);
+        _eventsByOrganizer.removeWhere((event) => event.id == eventId);
+        notifyListeners();
+      } else {
+        _error = 'Failed to delete event';
+      }
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+  
+  
 }

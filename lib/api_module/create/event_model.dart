@@ -2,46 +2,46 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class Event {
+class Events {
   final String name;
+  final String slug;
   final String description;
   final String startDate;
   final String endDate;
   final String location;
   final String category;
-  final String capacity;
   final String participantsType;
   final String eventType;
-  final String status;
+  final String regStatus;
   final String? imageUrl;
 
-  Event({
+  Events({
     required this.name,
+    required this.slug,
     required this.description,
     required this.startDate,
     required this.endDate,
     required this.location,
     required this.category,
-    required this.capacity,
     required this.participantsType,
     required this.eventType,
-    required this.status,
+    required this.regStatus,
     this.imageUrl,
   });
 
   Map<String, dynamic> toJson() {
     return {
-      'name': name,
+      'title': name,
+      'slug': slug,
       'description': description,
-      'startDate': startDate,
-      'endDate': endDate,
+      'start_date': startDate,
+      'end_date': endDate,
       'location': location,
-      'category': category,
-      'capacity': capacity,
-      'participantsType': participantsType,
-      'eventType': eventType,
-      'status': status,
-      'imageUrl': imageUrl,
+      'category_id': category,
+      'participation_type': participantsType,
+      'event_type': eventType,
+      'registration_status': regStatus,
+      'feature_image': imageUrl,
     };
   }
 }

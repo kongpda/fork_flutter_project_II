@@ -1,22 +1,28 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_project_ii/api_module/create/event_provider.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:flutter_project_ii/api_module/create/event_model.dart';
+import 'package:flutter_project_ii/api_module/create/event_provider.dart';
+import 'package:flutter_project_ii/api_module/detail_model.dart';
+import 'package:flutter_project_ii/api_module/event_model.dart';
+import 'package:flutter_project_ii/profile_module/profile_app.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 
-import 'dart:io';
-
-class AddEventScreen extends StatefulWidget {
-  const AddEventScreen({super.key});
+class EditEventScreen extends StatefulWidget {
+  final Event event;
+  final EventDetail eventDetail;
+  const EditEventScreen({Key? key, required this.event, required this.eventDetail}) : super(key: key);
 
   @override
-  State<AddEventScreen> createState() => _AddEventScreenState();
+  State<EditEventScreen> createState() => _EditEventScreenState();
 }
 
-class _AddEventScreenState extends State<AddEventScreen> {
-  File? _imageFile;  // Add this line at the start of the class
+class _EditEventScreenState extends State<EditEventScreen> {
+   File? _imageFile;  
+   bool _isLoading = false;// Add this line at the start of the class
 
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
@@ -29,11 +35,11 @@ class _AddEventScreenState extends State<AddEventScreen> {
     }
   }
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final _nameCtrl = TextEditingController();
-  final _descCtrl = TextEditingController();
-  final _startCtrl = TextEditingController();
-  final _endCtrl = TextEditingController();
-  final _locCtrl = TextEditingController();
+  late final _nameCtrl = TextEditingController(text: widget.event.attributes.title );
+  late final _descCtrl = TextEditingController(text: widget.eventDetail.data.attributes.description);
+  late final _startCtrl = TextEditingController(text: widget.eventDetail.data.attributes.startDate.toString());
+  late final _endCtrl = TextEditingController(text: widget.eventDetail.data.attributes.endDate.toString());
+  late final _locCtrl = TextEditingController(text: widget.eventDetail.data.attributes.location);
 
   String? _participantsType;
   String? _eventType;
@@ -71,6 +77,17 @@ class _AddEventScreenState extends State<AddEventScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color(0xFF1A202C),
+        title: Text('Edit Event'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_new_rounded),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ) ,
+        centerTitle: true,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -341,72 +358,85 @@ class _AddEventScreenState extends State<AddEventScreen> {
                 ],
               ),
               const SizedBox(height: 32),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      // Show loading indicator
-                      showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (BuildContext context) {
-                          return const Center(child: CircularProgressIndicator());
-                        },
-                      );
-
-                      String? imageUrl;
-                      if (_imageFile != null) {
-                        imageUrl = await _uploadImageToCloudinary(_imageFile!);
-                        if (imageUrl == null) {
-                          Navigator.pop(context); // Dismiss loading indicator
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Failed to upload image')),
+              Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          // Show loading indicator
+                          // showDialog(
+                          //   context: context,
+                          //   barrierDismissible: false,
+                          //   builder: (BuildContext context) {
+                          //     return const Center(child: CircularProgressIndicator());
+                          //   },
+                          // );
+                  
+                          String? imageUrl;
+                          if (_imageFile != null) {
+                            imageUrl = await _uploadImageToCloudinary(_imageFile!);
+                            if (imageUrl == null) {
+                              Navigator.pop(context); // Dismiss loading indicator
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Failed to upload image')),
+                              );
+                              return;
+                            }
+                          }
+                  
+                          final event = Events(
+                            name: _nameCtrl.text,
+                            slug: "",
+                            description: _descCtrl.text,
+                            startDate: _startCtrl.text,
+                            endDate: _endCtrl.text,
+                            location: _locCtrl.text,
+                            category: _categoryType ?? '1',
+                            participantsType: _participantsType ?? widget.eventDetail.data.attributes.participationType,
+                            regStatus: _regStatus ?? widget.eventDetail.data.attributes.registrationStatus,
+                            eventType: _eventType ?? widget.eventDetail.data.attributes.eventType,
+                            imageUrl: imageUrl ?? widget.event.attributes.featureImage, // Update the Event model to accept imageUrl instead of imageFile
                           );
-                          return;
+                          setState(() {
+                            _isLoading = true;
+                          });
+                          final success = await Provider.of<EventProvider>(context, listen: false)
+                              .updateEvent(context, event, widget.event.id);
+                  
+                          // Navigator.pop(context); // Dismiss loading indicator
+                          setState(() {
+                            _isLoading = false;
+                          });
+                          if (success) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Event Update successfully!')),
+                            );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => ProfileApp()
+                              ),
+                            );// Navigate to home and clear stack
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Failed to update event')),
+                            );
+                          }
                         }
-                      }
-
-                      final event = Events(
-                        name: _nameCtrl.text,
-                        slug: "",
-                        description: _descCtrl.text,
-                        startDate: _startCtrl.text,
-                        endDate: _endCtrl.text,
-                        location: _locCtrl.text,
-                        category: _categoryType ?? '1',
-                        participantsType: _participantsType ?? 'free',
-                        regStatus: _regStatus ?? 'open',
-                        eventType: _eventType ?? 'online',
-                        imageUrl: imageUrl, // Update the Event model to accept imageUrl instead of imageFile
-                      );
-
-                      final success = await Provider.of<EventProvider>(context, listen: false)
-                          .createEvent(context, event);
-
-                      Navigator.pop(context); // Dismiss loading indicator
-
-                      if (success) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Event created successfully!')),
-                        );
-                        Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false); // Navigate to home and clear stack
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Failed to create event')),
-                        );
-                      }
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    backgroundColor: Colors.blue,
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        backgroundColor: Colors.blue,
+                      ),
+                      child: const Text(
+                        'Update Event',
+                        style: TextStyle(fontSize: 16, color: Colors.white),
+                      ),
+                    ),
                   ),
-                  child: const Text(
-                    'Create Event',
-                    style: TextStyle(fontSize: 16, color: Colors.white),
-                  ),
-                ),
+              _isLoading ? const CircularProgressIndicator() : const SizedBox.shrink(),
+                ],
               ),
             ],
           ),

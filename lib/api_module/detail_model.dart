@@ -62,7 +62,7 @@ class DataAttributes {
     final String featureImage;
     final DateTime startDate;
     final DateTime endDate;
-    final String slug;
+    final String? slug;
     final String description;
     final String location;
     final String participationType;
