@@ -7,16 +7,16 @@ import 'package:flutter_project_ii/edit_screen.dart';
 import 'package:flutter_project_ii/profile_module/profile_app.dart';
 import 'package:provider/provider.dart';
 
-class DetailScreen extends StatefulWidget {
+class UserDetailScreen extends StatefulWidget {
   //const DetailScreen({super.key});
   final Event post;
-  const DetailScreen(this.post);
+  const UserDetailScreen(this.post);
 
   @override
-  State<DetailScreen> createState() => _DetailScreenState();
+  State<UserDetailScreen> createState() => _UserDetailScreenState();
 }
 
-class _DetailScreenState extends State<DetailScreen> {
+class _UserDetailScreenState extends State<UserDetailScreen> {
 
   void initState() {
     super.initState();
@@ -30,7 +30,109 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
+      appBar: AppBar(
+      backgroundColor: Color(0xFF1A202C),
+        title: Text('Event Detail'),
+        centerTitle: true,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 15),
+          child: Container(
+            padding: EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              //color: Color.fromARGB(255, 12, 41, 97),
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Container(
+              margin: EdgeInsets.only(left: 5),
+              child:
+                IconButton(onPressed: (){
+                  Navigator.pop(context);
+                }, 
+              icon: Icon(Icons.arrow_back_ios, color: Colors.white,size: 20,),
+              style: ButtonStyle(alignment: Alignment.center,),
+            ),
+            )
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.more_vert),
+            onPressed: () {
+            showMenu(
+              context: context,
+              position: RelativeRect.fromLTRB(100, 0, 0, 0),
+              items: [
+                PopupMenuItem(
+                  value: 'edit',
+                  child: Row(
+                    children: [
+                      Icon(Icons.edit, color: Colors.white),
+                      SizedBox(width: 10),
+                      Text('Edit'),
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+                  value: 'delete',
+                  child: Row(
+                    children: [
+                      Icon(Icons.delete, color: Colors.white),
+                      SizedBox(width: 10), 
+                      Text('Delete'),
+                    ],
+                  ),
+                ),
+              ],
+            ).then((value) {
+              if (value == 'edit') {
+                // Handle edit action
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditEventScreen(event: widget.post, eventDetail: context.read<EventLogic>().eventDetail!),
+                  ),
+                );
+
+              } else if (value == 'delete') {
+                // Handle delete action  
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      backgroundColor: Color(0xFF1A202C),
+                      title: Text('Delete Event'),
+                      content: Text('Are you sure you want to delete this event?'),
+                      actions: [
+                        TextButton(
+                          child: Text('Cancel'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        TextButton(
+                          child: Text('Delete'),
+                          onPressed: () async {
+                            await context.read<EventLogic>().deleteEvent(context, widget.post.id);
+                            if (mounted) {
+                              Navigator.of(context); // Close dialog
+                              Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => ProfileApp()
+                              ),
+                            ); // Navigate to profile screenឆ
+                            }
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
+            });
+            },
+          ),
+        ],
+      ),
       body: Consumer<EventLogic>(
         builder: (context, provider, child) {
           final eventDetail = context.watch<EventLogic>().eventDetail;
@@ -56,39 +158,12 @@ class _DetailScreenState extends State<DetailScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 69, 69, 70),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.white),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ),
-                    Text(
-                      'Event Detail',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.more_vert, color: Colors.white),
-                      onPressed: () {
-                        
-                      },
-                    ),
-                  ],
-                ),
-                SizedBox(height: 16),
                 Image.network(eventDetail?.data.attributes.featureImage ?? ''),
                 
                 SizedBox(height: 16),
                 Text(
                   provider.eventDetail?.data.attributes.title ?? '',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 8),
                 Text(
@@ -112,7 +187,7 @@ class _DetailScreenState extends State<DetailScreen> {
                       children: [
                         Text(
                           provider.eventDetail?.data.relationships.user.profile.firstName ?? '',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         Text(
                           provider.eventDetail?.data.relationships.organizer.attributes.name ?? '',
@@ -121,13 +196,13 @@ class _DetailScreenState extends State<DetailScreen> {
                       ],
                     ),
                     Spacer(),
-                    // TextButton(
-                    //   onPressed: () {},
-                    //   child: Text(
-                    //     'Follow',
-                    //     style: TextStyle(color: Colors.blue),
-                    //   ),
-                    // ),
+                    TextButton(
+                      onPressed: () {},
+                      child: Text(
+                        'Follow',
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                    ),
                   ],
                 ),
                 SizedBox(height: 16),

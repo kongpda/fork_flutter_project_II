@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project_ii/add_event_screen.dart';
-import 'package:flutter_project_ii/api_module/event_provider.dart';
 import 'package:flutter_project_ii/event_app.dart';
 import 'package:flutter_project_ii/favorite_screen.dart';
-import 'package:flutter_project_ii/home_screen.dart';
 import 'package:flutter_project_ii/profile_module/profile_app.dart';
-import 'package:flutter_project_ii/profile_module/profile_screen.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_project_ii/test_screen.dart';
 import 'package:flutter_project_ii/tickets/tickets_screen.dart';
 
 class MainScreen extends StatefulWidget {

@@ -45,14 +45,14 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: const Color(0xFF1A1B1E),
       ),
-      // routes: {
-      //   '/home': (context) => const MainScreen(),
-      //   '/signup': (context) => const SignUpScreen(),
-      //   '/forgot-password': (context) => const ForgotPasswordScreen(),
-      //   '/login': (context) => const LoginScreen(),
-      //   '/profile': (context) => ProfileApp(),
-      //   '/start': (context) => const GetStartScreen(),
-      // },
+      routes: {
+        '/home': (context) => const MainScreen(),
+        '/signup': (context) => const SignUpScreen(),
+        '/forgot-password': (context) => const ForgotPasswordScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/profile': (context) => ProfileApp(),
+        '/start': (context) => const GetStartScreen(),
+      },
       home: Consumer<AuthProvider>(
         builder: (context, authProvider, child) {
           if (authProvider.isFirstTime) {

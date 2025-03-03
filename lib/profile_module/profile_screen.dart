@@ -2,12 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_project_ii/api_module/event_logic.dart';
 import 'package:flutter_project_ii/api_module/event_model.dart';
-import 'package:flutter_project_ii/detail_screen.dart';
 import 'package:flutter_project_ii/profile_module/language_logic.dart';
 import 'package:flutter_project_ii/profile_module/information_screen.dart';
 import 'package:flutter_project_ii/profile_module/language_screen.dart';
-import 'package:flutter_project_ii/slide_model.dart';
 import 'package:flutter_project_ii/tickets/ticket_detail_screen.dart';
+import 'package:flutter_project_ii/user_detail_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_project_ii/auth/auth.dart';
 
@@ -537,7 +536,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return InkWell(
       onTap: () {
         Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => DetailScreen(post),)
+          MaterialPageRoute(builder: (context) => UserDetailScreen(post),)
         );
       },
       child: child,
