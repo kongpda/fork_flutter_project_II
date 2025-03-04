@@ -5,10 +5,12 @@ import 'package:flutter_project_ii/api_module/event_model.dart';
 import 'package:flutter_project_ii/profile_module/language_logic.dart';
 import 'package:flutter_project_ii/profile_module/information_screen.dart';
 import 'package:flutter_project_ii/profile_module/language_screen.dart';
+import 'package:flutter_project_ii/profile_module/security_settings_screen.dart';
 import 'package:flutter_project_ii/tickets/ticket_detail_screen.dart';
 import 'package:flutter_project_ii/user_detail_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_project_ii/auth/auth.dart';
+import 'package:flutter_project_ii/models/user_profile.dart';
 
 enum ChangeWidget {
   grid,
@@ -17,8 +19,7 @@ enum ChangeWidget {
 }
 
 class ProfileScreen extends StatefulWidget {
- // const ProfileScreen({super.key});
- 
+  const ProfileScreen({super.key});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -29,16 +30,122 @@ class _ProfileScreenState extends State<ProfileScreen> {
   List<Event> eventsByOrganizer = [];
   bool isSelected = false;
   final int _langIndex = 0;
+  bool _isFirstLoad = true;
 
-  
+  @override
+  void initState() {
+    super.initState();
+
+    // Refresh user profile when screen loads
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _refreshUserData();
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  // This method will be called when this screen is shown
+  void refreshOnTabSelected() {
+    print('Profile tab selected, refreshing data');
+    if (mounted) {
+      _refreshUserData();
+    }
+  }
+
+  void _refreshUserData() {
+    print('Refreshing user profile data');
+    Provider.of<AuthProvider>(context, listen: false).fetchUserProfile();
+    Provider.of<EventLogic>(context, listen: false).readByOrganizer(context);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+    final UserProfile? userProfile = authProvider.userProfile;
+
+    // Check if this is the first build and userProfile is null
+    if (_isFirstLoad && userProfile == null) {
+      _isFirstLoad = false;
+      // Schedule a refresh after the build is complete
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _refreshUserData();
+      });
+    }
+
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color(0xFF1A202C),
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.refresh, color: Colors.white),
+            onPressed: () async {
+              final result = await authProvider.fetchUserProfile();
+              if (result) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Profile updated successfully')),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Failed to update profile')),
+                );
+              }
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.info_outline, color: Colors.white),
+            onPressed: () {
+              // Show debug info
+              if (userProfile != null) {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Text('User Profile Debug Info'),
+                    content: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('ID: ${userProfile.id}'),
+                          Text('Name: ${userProfile.name}'),
+                          Text('Email: ${userProfile.email}'),
+                          Text('Display Name: ${userProfile.displayName}'),
+                          Text('First Name: ${userProfile.firstName ?? "N/A"}'),
+                          Text('Last Name: ${userProfile.lastName ?? "N/A"}'),
+                          Text('Full Name: ${userProfile.fullName ?? "N/A"}'),
+                          Text('Avatar URL: ${userProfile.avatarUrl ?? "N/A"}'),
+                          Text('Phone: ${userProfile.phone ?? "N/A"}'),
+                          Text('Status: ${userProfile.status ?? "N/A"}'),
+                          Text('Bio: ${userProfile.bio ?? "N/A"}'),
+                          Text('Address: ${userProfile.address ?? "N/A"}'),
+                        ],
+                      ),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text('Close'),
+                      ),
+                    ],
+                  ),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('No profile data available')),
+                );
+              }
+            },
+          ),
+        ],
+      ),
       body: Container(
         color: Color(0xFF1A202C),
         child: Column(
           children: [
-            SizedBox(height: 80),
+            SizedBox(height: 40),
             Container(
               padding: const EdgeInsets.all(2),
               decoration: const BoxDecoration(
@@ -47,8 +154,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               child: CircleAvatar(
                 radius: 60,
-                backgroundImage: NetworkImage(
-                    "https://images.pexels.com/photos/2080383/pexels-photo-2080383.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"),
+                backgroundImage: userProfile?.avatarUrl != null &&
+                        userProfile!.avatarUrl!.isNotEmpty
+                    ? NetworkImage(userProfile.avatarUrl!)
+                    : NetworkImage(
+                        "https://images.pexels.com/photos/2080383/pexels-photo-2080383.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"),
               ),
             ),
             SizedBox(
@@ -57,16 +167,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Column(
               children: [
                 Text(
-                  "Adam John Levine",
+                  userProfile?.displayName ?? "Guest User",
                   style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.white),
                 ),
                 Text(
-                  "Levineadam@mail.com",
+                  userProfile?.email ?? "guest@example.com",
                   style: TextStyle(color: Colors.grey.shade400),
                 ),
+                if (userProfile?.name != userProfile?.displayName &&
+                    userProfile?.name.isNotEmpty == true)
+                  Text(
+                    "@${userProfile!.name}",
+                    style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
+                  ),
               ],
             ),
             Padding(
@@ -287,93 +403,74 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return ListView(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.only(
-        left: 30,
-        right: 30,
-        top: 40,
-        bottom: 40,
+      padding: EdgeInsets.symmetric(
+        horizontal: 20,
+        vertical: 24,
       ),
       children: [
-        Row(
-          children: [
-            Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                    color: Colors.grey.shade900,
-                    borderRadius: BorderRadius.all(Radius.circular(20))),
-                child: Icon(
-                  Icons.notifications_none,
-                  color: Color(0xFF455AF7),
-                )),
-            SizedBox(
-              width: 30,
-            ),
-            Text(
-              "Notifications",
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
-            ),
-            Spacer(),
-            Icon(
-              Icons.navigate_next_sharp,
-              color: Colors.grey.shade500,
-              size: 34,
-            )
-          ],
-        ),
-        SizedBox(
-          height: 30,
-        ),
-        GestureDetector(
+        // Notifications row
+        _buildSettingsRow(
+          icon: Icons.notifications_outlined,
+          title: "Notifications",
           onTap: () {
-            // Navigate to change password screen
+            // Navigate to notifications screen when implemented
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Notifications feature coming soon')),
+            );
+          },
+        ),
+
+        // Personal Information row
+        _buildSettingsRow(
+          icon: Icons.person_outline_rounded,
+          title: "Personal Information",
+          onTap: () {
+            // Navigate directly to personal information screen without expecting a refresh on return
+            print('Navigating to PersonalInformationScreen');
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => PersonalInformationScreen(),
               ),
-            );
+            ).then((_) {
+              // Instead of expecting the previous screen to handle refresh, we explicitly refresh here
+              print(
+                  'Returned from PersonalInformationScreen, refreshing profile data');
+              if (mounted) {
+                setState(() {
+                  // Just trigger a rebuild to reflect any changes
+                });
+                // Refresh user profile data without showing a loading indicator
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  Provider.of<AuthProvider>(context, listen: false)
+                      .fetchUserProfile();
+                });
+              }
+            });
           },
-          child: Row(
+        ),
+
+        // Language row
+        _buildSettingsRow(
+          icon: Icons.translate,
+          title: "Language",
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                      color: Colors.grey.shade900,
-                      borderRadius: BorderRadius.all(Radius.circular(20))),
-                  child: Icon(
-                    Icons.person_outline_outlined,
-                    color: Color(0xFF455AF7),
-                  )),
-              SizedBox(
-                width: 30,
-              ),
               Text(
-                "Personal Information",
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
+                langIndex == 1 ? "Khmer" : "English",
+                style: TextStyle(color: Colors.grey.shade400, fontSize: 14),
               ),
-              Spacer(),
+              SizedBox(width: 8),
               Icon(
                 Icons.navigate_next_sharp,
-                color: Colors.grey.shade500,
-                size: 34,
-              )
+                color: Colors.grey.shade400,
+                size: 24,
+              ),
             ],
           ),
-        ),
-        SizedBox(
-          height: 30,
-        ),
-        GestureDetector(
           onTap: () {
-            // Navigate to change password screen
+            // Navigate to change language screen
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -381,81 +478,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             );
           },
-          child: Row(
-            children: [
-              Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                      color: Colors.grey.shade900,
-                      borderRadius: BorderRadius.all(Radius.circular(20))),
-                  child: Icon(
-                    Icons.translate,
-                    color: Color(0xFF455AF7),
-                  )),
-              SizedBox(
-                width: 30,
-              ),
-              Text(
-                "Language",
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
-              Spacer(),
-              Text(
-                langIndex == 1 ? "Khmer" : "English",
-                style: TextStyle(color: Colors.grey.shade500),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Icon(
-                Icons.navigate_next_sharp,
-                color: Colors.grey.shade500,
-                size: 34,
-              )
-            ],
-          ),
         ),
-        SizedBox(
-          height: 30,
+
+        // Settings row
+        _buildSettingsRow(
+          icon: Icons.settings_outlined,
+          title: "Settings",
+          onTap: () {
+            // Navigate to settings screen when implemented
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Settings feature coming soon')),
+            );
+          },
         ),
-        Row(
-          children: [
-            Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                    color: Colors.grey.shade900,
-                    borderRadius: BorderRadius.all(Radius.circular(20))),
-                child: Icon(
-                  Icons.settings,
-                  color: Color(0xFF455AF7),
-                )),
-            SizedBox(
-              width: 30,
-            ),
-            Text(
-              "Setting",
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
-            ),
-            Spacer(),
-            Icon(
-              Icons.navigate_next_sharp,
-              color: Colors.grey.shade500,
-              size: 34,
-            )
-          ],
+
+        // Security row
+        _buildSettingsRow(
+          icon: Icons.security,
+          title: "Security",
+          onTap: () {
+            // Navigate to security settings screen
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const SecuritySettingsScreen(),
+              ),
+            );
+          },
         ),
-        SizedBox(
-          height: 30,
-        ),
-        GestureDetector(
+
+        // Logout row
+        _buildSettingsRow(
+          icon: Icons.logout_outlined,
+          title: "Logout",
           onTap: () async {
             await context.read<AuthProvider>().logout();
             if (mounted) {
@@ -465,56 +520,155 @@ class _ProfileScreenState extends State<ProfileScreen> {
               );
             }
           },
-          child: Row(
-            children: [
-              Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                      color: Colors.grey.shade900,
-                      borderRadius: BorderRadius.all(Radius.circular(20))),
-                  child: Icon(
-                    Icons.logout_outlined,
-                    color: Color(0xFF455AF7),
-                  )),
-              SizedBox(width: 30),
-              Text(
-                "Logout",
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
-              Spacer(),
-              Icon(
-                Icons.navigate_next_sharp,
-                color: Colors.grey.shade500,
-                size: 34,
-              )
-            ],
-          ),
         ),
       ],
     );
   }
 
-  Widget _buildGridItem() {
-    List<Event> eventsByOrganizer = context.watch<EventLogic>().eventsByOrganizer;
-    return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.4,
-      child: GridView.builder(
-        shrinkWrap: true,
-        itemCount: eventsByOrganizer.length,
-        physics: ScrollPhysics(),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          crossAxisSpacing: 2,
-          mainAxisSpacing: 2,
+  // Helper method to build consistent settings rows
+  Widget _buildSettingsRow({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+    Widget? trailing,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        splashColor: Color(0xFF455AF7).withOpacity(0.1),
+        highlightColor: Color(0xFF1A1D24).withOpacity(0.3),
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Color(0xFF151921),
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+                child: Icon(
+                  icon,
+                  color: Color(0xFF455AF7),
+                  size: 20,
+                ),
+              ),
+              SizedBox(width: 20),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white,
+                ),
+              ),
+              Spacer(),
+              trailing ??
+                  Icon(
+                    Icons.navigate_next_sharp,
+                    color: Colors.grey.shade400,
+                    size: 24,
+                  ),
+            ],
+          ),
         ),
-        itemBuilder: (context, index) {
-          return _buildPostItem(eventsByOrganizer[index]);
-        },
       ),
+    );
+  }
+
+  Widget _buildGridItem() {
+    final eventLogic = context.watch<EventLogic>();
+    final List<Event> eventsByOrganizer = eventLogic.eventsByOrganizer;
+    final bool isLoading = eventLogic.isLoading;
+
+    if (isLoading) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (eventsByOrganizer.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.event_busy,
+              size: 64,
+              color: Colors.grey.shade600,
+            ),
+            SizedBox(height: 16),
+            Text(
+              "No events found",
+              style: TextStyle(
+                color: Colors.grey.shade400,
+                fontSize: 18,
+              ),
+            ),
+            SizedBox(height: 24),
+            ElevatedButton.icon(
+              onPressed: () {
+                eventLogic.readByOrganizer(context);
+              },
+              icon: Icon(Icons.refresh),
+              label: Text("Refresh"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF455AF7),
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "My Events",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              IconButton(
+                icon: Icon(Icons.refresh, color: Colors.white),
+                onPressed: () {
+                  eventLogic.readByOrganizer(context);
+                },
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: GridView.builder(
+            shrinkWrap: true,
+            itemCount: eventsByOrganizer.length,
+            physics: ScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 2,
+              mainAxisSpacing: 2,
+            ),
+            itemBuilder: (context, index) {
+              return _buildPostItem(eventsByOrganizer[index]);
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -535,9 +689,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _navigateToDetailScreen(Event post, {Widget? child}) {
     return InkWell(
       onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => UserDetailScreen(post),)
-        );
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => UserDetailScreen(post),
+        ));
       },
       child: child,
     );

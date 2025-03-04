@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter_project_ii/services/api_constants.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -260,6 +261,204 @@ class AuthService {
       }
 
       return {'success': false, 'message': errorMessage};
+    }
+  }
+
+  static Future<Map<String, dynamic>> getUserProfile(String token) async {
+    try {
+      print('Fetching user profile from: ${ApiConstants.baseUrl}/user/profile');
+      final response = await http.get(
+        Uri.parse('${ApiConstants.baseUrl}/user/profile'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json',
+        },
+      );
+
+      print('User profile API response status: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        print('User profile data received: ${responseData['message']}');
+        return {
+          'success': true,
+          'data': responseData,
+        };
+      }
+
+      print(
+          'Failed to get user profile. Status: ${response.statusCode}, Body: ${response.body}');
+      return {
+        'success': false,
+        'message': 'Failed to get user profile. Status: ${response.statusCode}',
+      };
+    } catch (e) {
+      print('Error fetching user profile: $e');
+      return {
+        'success': false,
+        'message': 'Connection error: $e',
+      };
+    }
+  }
+
+  static Future<Map<String, dynamic>> updateUserProfile(
+    String token,
+    String profileId,
+    Map<String, dynamic> profileData,
+  ) async {
+    try {
+      print('Updating profile at: ${ApiConstants.baseUrl}/profiles/$profileId');
+      print('Update data: $profileData');
+
+      // Send the profile data directly without wrapping it in a data object
+      final response = await http.put(
+        Uri.parse('${ApiConstants.baseUrl}/profiles/$profileId'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        // Send the profile data directly as specified in the API documentation
+        body: json.encode(profileData),
+      );
+
+      print('Profile update API response status: ${response.statusCode}');
+      print('Profile update API response body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final responseData = json.decode(response.body);
+        print('Profile updated successfully: $responseData');
+        return {
+          'success': true,
+          'data': responseData,
+        };
+      }
+
+      print(
+          'Failed to update profile. Status: ${response.statusCode}, Body: ${response.body}');
+
+      // Try to parse error message from response
+      String errorMessage =
+          'Failed to update profile. Status: ${response.statusCode}';
+      try {
+        final errorData = json.decode(response.body);
+        if (errorData['message'] != null) {
+          errorMessage = errorData['message'];
+        } else if (errorData['errors'] != null &&
+            errorData['errors'] is List &&
+            errorData['errors'].isNotEmpty) {
+          errorMessage = errorData['errors'][0]['detail'] ?? errorMessage;
+        }
+
+        print('Parsed error message: $errorMessage');
+      } catch (e) {
+        // If we can't parse the error, use the default message
+        print('Could not parse error response: $e');
+      }
+
+      return {
+        'success': false,
+        'message': errorMessage,
+      };
+    } catch (e) {
+      print('Error updating profile: $e');
+      return {
+        'success': false,
+        'message': 'Connection error: $e',
+      };
+    }
+  }
+
+  static Future<Map<String, dynamic>> uploadAvatar(
+    String token,
+    File avatarFile,
+  ) async {
+    try {
+      print('Uploading avatar to: ${ApiConstants.baseUrl}/profile/avatar');
+
+      // Create multipart request
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('${ApiConstants.baseUrl}/profile/avatar'),
+      );
+
+      // Add authorization header
+      request.headers.addAll({
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      });
+
+      // Add file to request
+      request.files.add(await http.MultipartFile.fromPath(
+        'avatar',
+        avatarFile.path,
+      ));
+
+      // Send request
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+
+      print('Avatar upload API response status: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        print('Avatar uploaded successfully: ${responseData['message']}');
+        return {
+          'success': true,
+          'data': responseData,
+        };
+      }
+
+      print(
+          'Failed to upload avatar. Status: ${response.statusCode}, Body: ${response.body}');
+      return {
+        'success': false,
+        'message': 'Failed to upload avatar. Status: ${response.statusCode}',
+      };
+    } catch (e) {
+      print('Error uploading avatar: $e');
+      return {
+        'success': false,
+        'message': 'Connection error: $e',
+      };
+    }
+  }
+
+  static Future<Map<String, dynamic>> removeAvatar(String token) async {
+    try {
+      print('Removing avatar at: ${ApiConstants.baseUrl}/profile/avatar');
+
+      final response = await http.delete(
+        Uri.parse('${ApiConstants.baseUrl}/profile/avatar'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json',
+        },
+      );
+
+      print('Avatar removal API response status: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        print('Avatar removed successfully: ${responseData['message']}');
+        return {
+          'success': true,
+          'data': responseData,
+        };
+      }
+
+      print(
+          'Failed to remove avatar. Status: ${response.statusCode}, Body: ${response.body}');
+      return {
+        'success': false,
+        'message': 'Failed to remove avatar. Status: ${response.statusCode}',
+      };
+    } catch (e) {
+      print('Error removing avatar: $e');
+      return {
+        'success': false,
+        'message': 'Connection error: $e',
+      };
     }
   }
 }

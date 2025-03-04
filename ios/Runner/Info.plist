@@ -59,8 +59,14 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
     <key>NSLocationWhenInUseUsageDescription</key>
-<string>This app needs access to location to show nearby events.</string>
-<key>NSLocationAlwaysUsageDescription</key>
-<string>This app needs access to location to show nearby events.</string>
+    <string>This app needs access to location to show nearby events.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>This app needs access to location to show nearby events.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>This app needs camera access to take profile pictures</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>This app needs photo library access to select profile pictures</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>This app needs microphone access for video recording</string>
 </dict>
 </plist>

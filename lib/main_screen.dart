@@ -5,6 +5,9 @@ import 'package:flutter_project_ii/favorite_screen.dart';
 import 'package:flutter_project_ii/profile_module/profile_app.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_project_ii/tickets/tickets_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_project_ii/auth/auth.dart';
+import 'package:flutter_project_ii/api_module/event_logic.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -23,13 +26,20 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
+  // Create references to each tab widget
+  final EventApp _eventApp = EventApp();
+  final FavoriteScreen _favoriteScreen = FavoriteScreen();
+  final AddEventScreen _addEventScreen = AddEventScreen();
+  final TicketsScreen _ticketsScreen = TicketsScreen();
+  final ProfileApp _profileApp = ProfileApp();
+
   Widget _buildBody() {
     return IndexedStack(index: currentIndex, children: [
-      EventApp(),
-      FavoriteScreen(),
-      AddEventScreen(),
-      TicketsScreen(),
-      ProfileApp(),
+      _eventApp,
+      _favoriteScreen,
+      _addEventScreen,
+      _ticketsScreen,
+      _profileApp,
     ]);
   }
 
@@ -40,9 +50,26 @@ class _MainScreenState extends State<MainScreen> {
       backgroundColor: Color(0xFF1A202C),
       selectedIndex: currentIndex,
       onDestinationSelected: (index) {
+        // Store previous index to check if we're switching to profile tab
+        final previousIndex = currentIndex;
+
         setState(() {
           currentIndex = index;
         });
+
+        // If switching to profile tab (index 4), refresh the profile data
+        if (index == 4 && previousIndex != 4) {
+          print('Switching to profile tab, refreshing data');
+          // Use Future.microtask to ensure this runs after the state is updated
+          Future.microtask(() {
+            // Directly refresh the auth provider data
+            Provider.of<AuthProvider>(context, listen: false)
+                .fetchUserProfile();
+            // Refresh events data
+            Provider.of<EventLogic>(context, listen: false)
+                .readByOrganizer(context);
+          });
+        }
       },
       indicatorColor: Color(0xFF1A202C),
       overlayColor: WidgetStateColor.transparent,
