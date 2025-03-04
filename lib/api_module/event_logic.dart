@@ -26,11 +26,13 @@ class EventLogic with ChangeNotifier {
   List<Event> _eventsByOrganizer = [];
   List<Event> get eventsByOrganizer => _eventsByOrganizer;
 
+  List<Event> get favoritedEvents => _events.where((event) => event.attributes.isFavorited).toList();
+
   void setLoading(){
     _isLoading = true;
     notifyListeners();
   }
-List<Event> get favoritedEvents => _events.where((event) => event.attributes.isFavorited).toList();
+List<Event> get eventParticipant => _events.where((event) => event.attributes.isFavorited).toList();
 
 
 

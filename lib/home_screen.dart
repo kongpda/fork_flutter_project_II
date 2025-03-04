@@ -165,6 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
       isFavorited: event.attributes.isFavorited,
       favoritesCount: event.attributes.favoritesCount ?? 0,
       toggleFavoriteUrl: event.links.toggleFavorite,
+      isPaticipant: event.attributes.isParticipant ?? false,
       onFavoriteToggled: () {
         // Refresh the events list
         context.read<EventLogic>().read(context);

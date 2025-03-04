@@ -63,12 +63,13 @@ Future<bool> updateEvent(BuildContext context,Events event,String eventId) async
       return false;
     }
   }
-  Future<bool> joinEvent(BuildContext context,EventParticipant event) async {
+  Future<bool> joinEvent(BuildContext context,String eventId,EventParticipant event) async {
     print(event.toJson());
+    print(eventId);
     try {
       final token = context.read<AuthProvider>().token;
       final response = await http.post(
-        Uri.parse('https://events.iink.dev/api/event-participants'),
+        Uri.parse('https://events.iink.dev/api/events/$eventId/toggle-participation'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
@@ -78,7 +79,9 @@ Future<bool> updateEvent(BuildContext context,Events event,String eventId) async
         }),
       );
       print(response.statusCode);
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        print(data);
         notifyListeners();
         return true;
       } else {
