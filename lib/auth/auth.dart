@@ -182,6 +182,13 @@ class AuthProvider extends ChangeNotifier {
               'User profile parsed successfully with ID: ${_userProfile?.id}');
           print('User profile display name: ${_userProfile?.displayName}');
           print('User profile avatar URL: ${_userProfile?.avatarUrl}');
+          print('User profile first name: ${_userProfile?.firstName}');
+          print('User profile last name: ${_userProfile?.lastName}');
+          print('User profile full name: ${_userProfile?.fullName}');
+          print('User profile name: ${_userProfile?.name}');
+          print('User profile email: ${_userProfile?.email}');
+          print(
+              'User profile relationships ID: ${_userProfile?.relationshipsProfileId}');
 
           notifyListeners();
           return true;

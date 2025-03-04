@@ -36,11 +36,15 @@ class UserProfile {
   });
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
+    print('Starting UserProfile.fromJson with data: $json');
+
     // Extract user data from the nested structure
     final userData = json['user'] ?? json;
+    print('Extracted userData: $userData');
 
     // Get user attributes
     final attributes = userData['attributes'] ?? {};
+    print('Extracted attributes: $attributes');
 
     // Get profile data from relationships
     Map<String, dynamic> profileData = {};
@@ -52,6 +56,7 @@ class UserProfile {
       if (userData['relationships'] != null &&
           userData['relationships']['profile'] != null) {
         final profile = userData['relationships']['profile'];
+        print('Found profile in relationships: $profile');
 
         // Extract the profile ID
         if (profile['id'] != null) {
@@ -66,6 +71,7 @@ class UserProfile {
         // Extract from the attributes within relationships
         if (profile['attributes'] != null) {
           profileData = profile['attributes'];
+          print('Extracted profile attributes: $profileData');
         }
 
         // Try getting from the API structure specifically seen in logs
@@ -94,12 +100,31 @@ class UserProfile {
     }
 
     print('Final extracted relationshipsProfileId: $relationshipsProfileId');
+    print('Final profileData: $profileData');
     print('Full userData structure for debugging: $userData');
 
+    // Make sure we have a valid ID
+    String id = '';
+    if (userData['profile_id'] != null) {
+      id = userData['profile_id'].toString();
+    } else if (userData['id'] != null) {
+      id = userData['id'].toString();
+    } else if (relationshipsProfileId != null) {
+      id = relationshipsProfileId;
+    }
+    print('Final ID to be used: $id');
+
+    // Make sure we have valid name and email
+    String name = attributes['name'] ?? '';
+    String email = attributes['email'] ?? '';
+
+    print('Final name to be used: $name');
+    print('Final email to be used: $email');
+
     return UserProfile(
-      id: userData['profile_id'] ?? userData['id'] ?? '',
-      name: attributes['name'] ?? '',
-      email: attributes['email'] ?? '',
+      id: id,
+      name: name,
+      email: email,
       firstName: profileData['first_name'],
       lastName: profileData['last_name'],
       fullName: profileData['full_name'],
@@ -110,7 +135,9 @@ class UserProfile {
       bio: profileData['bio'],
       address: profileData['address'],
       socialLinks: profileData['social_links'] != null
-          ? Map<String, dynamic>.from(profileData['social_links'])
+          ? (profileData['social_links'] is Map
+              ? Map<String, dynamic>.from(profileData['social_links'])
+              : {'links': profileData['social_links']})
           : null,
       createdAt: attributes['created_at'],
       updatedAt: attributes['updated_at'],

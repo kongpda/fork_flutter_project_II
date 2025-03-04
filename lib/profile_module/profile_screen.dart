@@ -177,12 +177,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   userProfile?.email ?? "guest@example.com",
                   style: TextStyle(color: Colors.grey.shade400),
                 ),
-                if (userProfile?.name != userProfile?.displayName &&
-                    userProfile?.name.isNotEmpty == true)
-                  Text(
-                    "@${userProfile!.name}",
-                    style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
-                  ),
               ],
             ),
             Padding(
