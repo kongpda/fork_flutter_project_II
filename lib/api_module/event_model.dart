@@ -2,6 +2,7 @@
 //
 //     final eventModel = eventModelFromJson(jsonString);
 
+import 'package:meta/meta.dart';
 import 'dart:convert';
 
 EventModel eventModelFromJson(String str) => EventModel.fromJson(json.decode(str));
@@ -71,6 +72,8 @@ class Attributes {
     final DateTime? endDate;
     final int favoritesCount;
     final bool isFavorited;
+    final bool? isParticipant;
+    final bool isFeatured;
 
     Attributes({
         required this.title,
@@ -79,6 +82,8 @@ class Attributes {
         required this.endDate,
         required this.favoritesCount,
         required this.isFavorited,
+        required this.isParticipant,
+        required this.isFeatured,
     });
 
     factory Attributes.fromJson(Map<String, dynamic> json) => Attributes(
@@ -88,6 +93,8 @@ class Attributes {
         endDate: DateTime.parse(json["end_date"]),
         favoritesCount: json["favorites_count"],
         isFavorited: json["is_favorited"],
+        isParticipant: json["is_participant"],
+        isFeatured: json["is_featured"],
     );
 
     Map<String, dynamic> toJson() => {
@@ -97,6 +104,8 @@ class Attributes {
         "end_date": endDate?.toIso8601String(),
         "favorites_count": favoritesCount,
         "is_favorited": isFavorited,
+        "is_participant": isParticipant,
+        "is_featured": isFeatured,
     };
 }
 

@@ -83,6 +83,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
       eventId: event.id,
       isFavorited: event.attributes.isFavorited,
       favoritesCount: event.attributes.favoritesCount ?? 0,
+      isPaticipant: event.attributes.isParticipant ?? false,
       toggleFavoriteUrl: event.links.toggleFavorite,
       onFavoriteToggled: () {
         // Refresh the favorites list

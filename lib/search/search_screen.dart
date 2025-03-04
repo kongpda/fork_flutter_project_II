@@ -422,6 +422,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   'assets/images/event-one.jpg',
                               eventId: event['id'],
                               isFavorited: attributes['is_favorited'] ?? false,
+                              isPaticipant: attributes['is_participant'] ?? false,
                               favoritesCount:
                                   attributes['favorites_count'] ?? 0,
                               toggleFavoriteUrl: event['links']

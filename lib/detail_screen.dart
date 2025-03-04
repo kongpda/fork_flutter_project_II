@@ -3,8 +3,7 @@ import 'package:flutter_project_ii/api_module/create/event_provider.dart';
 import 'package:flutter_project_ii/api_module/event_logic.dart';
 import 'package:flutter_project_ii/api_module/event_model.dart';
 import 'package:flutter_project_ii/api_module/event_participant_model.dart';
-import 'package:flutter_project_ii/edit_screen.dart';
-import 'package:flutter_project_ii/profile_module/profile_app.dart';
+import 'package:flutter_project_ii/qr_screen.dart';
 import 'package:provider/provider.dart';
 
 class DetailScreen extends StatefulWidget {
@@ -26,13 +25,14 @@ class _DetailScreenState extends State<DetailScreen> {
 
     );
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       
       body: Consumer<EventLogic>(
         builder: (context, provider, child) {
+          List<Event> isPaticipant = context.watch<EventLogic>().eventParticipant;
+          debugPrint(widget.post.attributes.isParticipant.toString());
           final eventDetail = context.watch<EventLogic>().eventDetail;
           if (provider.isLoading) {
             return const Center(child: CircularProgressIndicator(
@@ -141,37 +141,32 @@ class _DetailScreenState extends State<DetailScreen> {
                   child: ElevatedButton(
                     onPressed: ()async {
 
-                      final eventId = provider.eventDetail?.data.id;
-                      print('Event ID:'+eventId.toString());
-                        showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (BuildContext context) {
-                          return const Center(child: CircularProgressIndicator());
-                        },
-                      );
+                      
+                      
                         final joinEvent = EventParticipant(
-                          eventId: provider.eventDetail?.data.id ?? '',
-                          userId: provider.eventDetail?.data.relationships.user.id ?? '',
                           status: "registered",
                           participationType: eventDetail?.data.attributes.participationType ?? '',
                           ticketTypeId: "2",
-                          checkInTime: DateTime.now(),
-                          joinedAt: DateTime.now(),
 
                         );
                         final success = await Provider.of<EventProvider>(context, listen: false)
-                          .joinEvent(context, joinEvent);
+                          .joinEvent(context,widget.post.id, joinEvent);
 
                       Navigator.pop(context); // Dismiss loading indicator
+                        context.read<EventLogic>().read(context);
 
                       if (success) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Join Event successfully!')),
+                        // ScaffoldMessenger.of(context).showSnackBar(
+                        //   const SnackBar(content: Text('Join Event successfully!')),
                           
+                        // );
+                        if(widget.post.attributes.isParticipant == true){
+                          Navigator.push(context, 
+                          MaterialPageRoute(builder: (context) => QRCodeScreen(eventId: widget.post.id))
                         );
-                        
-                        Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false); // Navigate to home and clear stack
+                        }else{
+                          Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false); // Navigate to home and clear stack
+                        }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Failed to Join event')),
@@ -189,10 +184,11 @@ class _DetailScreenState extends State<DetailScreen> {
                       padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                       backgroundColor: Colors.blue,
                     ),
-                    child: Text(
-                      'Join Event',
-                      style: TextStyle(fontSize: 18, color: Colors.white),
-                    ),
+                    child: widget.post.attributes.isParticipant ?? false  ? Text('Join Event',style: TextStyle(color: Colors.white),) : 
+                    Text('Leave Event',style: TextStyle(color: Colors.white),),
+                    
+                      
+                    
                   ),
                 ),
               ],

@@ -212,64 +212,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                 ),
                 
                 SizedBox(height: 30),
-                Center(
-                  child: ElevatedButton(
-                    onPressed: ()async {
-
-                      final eventId = provider.eventDetail?.data.id;
-                      print('Event ID:'+eventId.toString());
-                        showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (BuildContext context) {
-                          return const Center(child: CircularProgressIndicator());
-                        },
-                      );
-                        final joinEvent = EventParticipant(
-                          eventId: provider.eventDetail?.data.id ?? '',
-                          userId: provider.eventDetail?.data.relationships.user.id ?? '',
-                          status: "registered",
-                          participationType: eventDetail?.data.attributes.participationType ?? '',
-                          ticketTypeId: "2",
-                          checkInTime: DateTime.now(),
-                          joinedAt: DateTime.now(),
-
-                        );
-                        final success = await Provider.of<EventProvider>(context, listen: false)
-                          .joinEvent(context, joinEvent);
-
-                      Navigator.pop(context); // Dismiss loading indicator
-
-                      if (success) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Join Event successfully!')),
-                          
-                        );
-                        
-                        Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false); // Navigate to home and clear stack
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Failed to Join event')),
-                        );
-                      }
-                        //context.read<EventLogic>()
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => QRCodeScreen(eventId: eventId),
-                        //   ),
-                        // );
-                      },
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                      backgroundColor: Colors.blue,
-                    ),
-                    child: Text(
-                      'Join Event',
-                      style: TextStyle(fontSize: 18, color: Colors.white),
-                    ),
-                  ),
-                ),
+                
               ],
             ),
           ),
